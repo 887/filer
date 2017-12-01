@@ -1,0 +1,17 @@
+[package]
+authors = ["887 <2300887@gmail.com>"]
+name = "filer"
+version = "0.1.0"
+
+# [dependencigs]
+# webkit2gtk = "0.2.2"
+
+[dependencies.gtk]
+features = [
+    "v3_22",
+    "embed-lgpl-docs",
+]
+version = "0.3.x"
+
+[dependencies.glib]
+version = "0.4.0"
