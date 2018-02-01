@@ -23,17 +23,11 @@ fn main() {
 
     let main_window = MainWindow::new(&main_builder);
 
-    main_window.connect_delete_event(&on_quit);
+    main_window.init();
 
-    main_window.show_all();
-
-    gtk::main();
+    main_window.show();
 }
 
-fn on_quit() -> Inhibit {
-    gtk::main_quit();
-    Inhibit(false)
-}
 
 //let button: Button = main_builder.get_object("button1").unwrap();
 //let dialog: MessageDialog = main_builder.get_object("messagedialog1").unwrap();

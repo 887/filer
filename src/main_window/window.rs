@@ -1,4 +1,6 @@
 extern crate gtk;
+extern crate glib;
+extern crate gdk;
 
 use gtk::*;
 use gtk::prelude::*;
@@ -13,6 +15,11 @@ pub struct MainWindow {
     pub contents: Content,
 }
 
+fn delete_event(s: &gtk::Window, f: &gdk::Event) -> Inhibit {
+    gtk::main_quit();
+    Inhibit(false)
+}
+
 impl MainWindow {
     pub fn new(builder: &Builder) -> MainWindow {
         let main_window = MainWindow {
@@ -24,13 +31,10 @@ impl MainWindow {
         main_window.window.set_title("Filer");
         main_window
     }
-    pub fn connect_delete_event(&self, f: & 'static Fn() -> Inhibit) {
-        self.window.connect_delete_event(move |_, _| {
-            f();
-            Inhibit(false)
-        });
+    pub fn init(&self) {
+        self.window.connect_delete_event(&delete_event);
     }
-    pub fn show_all(&self) {
+    pub fn show(&self) {
         self.window.show_all();
     }
 }
