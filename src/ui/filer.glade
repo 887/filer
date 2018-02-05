@@ -97,7 +97,7 @@
         <property name="spacing">0</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkMenuButton">
+          <object class="GtkMenuButton" id="file_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -120,7 +120,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkMenuButton">
+          <object class="GtkButton" id="back_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -138,7 +138,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkMenuButton">
+          <object class="GtkButton" id="forward_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -156,7 +156,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkMenuButton">
+          <object class="GtkButton" id="up_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -174,36 +174,14 @@
           </packing>
         </child>
         <child type="title">
-          <object class="GtkStackSwitcher">
+          <object class="GtkStackSwitcher" id="main_stack_switcher">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stack">stack1</property>
           </object>
         </child>
         <child>
-          <object class="GtkMenuButton" id="options_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">open-menu-symbolic</property>
-                <property name="use_fallback">True</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton">
+          <object class="GtkToggleButton" id="icons_view_toggle_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -222,11 +200,56 @@
           </object>
           <packing>
             <property name="pack_type">end</property>
-            <property name="position">7</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkMenuButton">
+          <object class="GtkToggleButton" id="details_view_toggle_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">view-list-symbolic</property>
+                <property name="use_fallback">True</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="names_view_toggle_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">open-menu-symbolic</property>
+                <property name="use_fallback">True</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="find_toggle_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -245,7 +268,7 @@
           </object>
           <packing>
             <property name="pack_type">end</property>
-            <property name="position">8</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

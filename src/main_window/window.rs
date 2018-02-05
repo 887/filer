@@ -8,6 +8,7 @@ use glib::signal::SignalHandlerId;
 
 use main_window::header::*;
 use main_window::content::*;
+use main_window::fileliststore::*;
 
 pub struct MainWindow {
     pub window: gtk::Window,
@@ -33,6 +34,8 @@ impl MainWindow {
     }
     pub fn init(&self) {
         self.window.connect_delete_event(&delete_event);
+
+        let fileliststore = FileListStore::new();
     }
     pub fn show(&self) {
         self.window.show_all();

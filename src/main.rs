@@ -18,7 +18,7 @@ fn main() {
         return;
     }
 
-    let main_glade = include_str!("ui/filer.ui");
+    let main_glade = include_str!("ui/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     let main_window = MainWindow::new(&main_builder);
@@ -26,6 +26,9 @@ fn main() {
     main_window.init();
 
     main_window.show();
+
+    gtk::main();
+    println!("End");
 }
 
 
