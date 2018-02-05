@@ -3,4 +3,5 @@
 rusty-tags.vi
 .vscode
 **/*.ui~
+**/*.glade~
 
