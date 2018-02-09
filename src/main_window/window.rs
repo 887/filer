@@ -41,6 +41,7 @@ impl MainWindow {
         //TODO: read the docs
         //can we set an app to this window this late?
         //it seems to be only possible in new..
+        app.add_window(&self.window);
         self.window.show_all();
     }
 }

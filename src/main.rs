@@ -71,23 +71,6 @@ fn main() {
     app.connect_activate(move |app|{
         println!("app activated");
 
-        //test
-        //this test window doesnt have client-side-decorations enabled by default
-        let other_app_window = gtk::ApplicationWindow::new(app);
-        other_app_window.set_show_menubar(true);
-
-        //to get client side decorations it needs a header bar!!
-        //https://stackoverflow.com/questions/21079506/how-do-client-side-decorations-work-with-gnome-3-10-and-gtk-3
-        let header = gtk::HeaderBar::new();
-        //TODO: there are some missing options i bet, set some options on headerl
-        header.set_visible(true);
-        header.set_show_close_button(true);
-        other_app_window.set_titlebar(&header);
-        other_app_window.show();
-        //this works but it somehow isnt visible?
-        //all of this works but we still dont get the menu like eog or nautilus..
-        //TODO FIXME
-
         main_window.show(app);
     });
 
@@ -96,6 +79,21 @@ fn main() {
     println!("End");
 }
 
+// fn create_test_window(app: &gtk::Application) {
+//     //test
+//     //this test window doesnt have client-side-decorations enabled by default
+//     let other_app_window = gtk::ApplicationWindow::new(app);
+//     other_app_window.set_show_menubar(true);
+//
+//     //to get client side decorations it needs a header bar!!
+//     //https://stackoverflow.com/questions/21079506/how-do-client-side-decorations-work-with-gnome-3-10-and-gtk-3
+//     let header = gtk::HeaderBar::new();
+//     //TODO: there are some missing options i bet, set some options on headerl
+//     header.set_visible(true);
+//     header.set_show_close_button(true);
+//     other_app_window.set_titlebar(&header);
+//     other_app_window.show();
+// }
 
 //let button: Button = main_builder.get_object("button1").unwrap();
 //let dialog: MessageDialog = main_builder.get_object("messagedialog1").unwrap();
