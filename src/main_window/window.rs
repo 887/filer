@@ -11,12 +11,12 @@ use main_window::content::*;
 use main_window::fileliststore::*;
 
 pub struct MainWindow {
-    pub window: gtk::Window,
+    pub window: gtk::ApplicationWindow,
     pub header: Header,
     pub contents: Content,
 }
 
-fn delete_event(s: &gtk::Window, f: &gdk::Event) -> Inhibit {
+fn delete_event(s: &gtk::ApplicationWindow, f: &gdk::Event) -> Inhibit {
     gtk::main_quit();
     Inhibit(false)
 }
@@ -24,7 +24,7 @@ fn delete_event(s: &gtk::Window, f: &gdk::Event) -> Inhibit {
 impl MainWindow {
     pub fn new(builder: &Builder) -> MainWindow {
         let main_window = MainWindow {
-            window: builder.get_object::<Window>("window1").unwrap(),
+            window: builder.get_object::<ApplicationWindow>("window1").unwrap(),
             header: Header::new(builder),
             contents: Content::new(builder),
         };
@@ -37,7 +37,10 @@ impl MainWindow {
 
         let fileliststore = FileListStore::new();
     }
-    pub fn show(&self) {
+    pub fn show(&self, app: &gtk::Application) {
+        //TODO: read the docs
+        //can we set an app to this window this late?
+        //it seems to be only possible in new..
         self.window.show_all();
     }
 }

@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 gdk = "0.7.0"
+gio = "0.3.0"
 
 # [dependencigs]
 # webkit2gtk = "0.2.2"

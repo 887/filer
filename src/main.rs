@@ -4,29 +4,90 @@
 //#[macro_use]
 extern crate gtk;
 extern crate glib;
+extern crate gio;
 
 mod main_window;
 
+use std::env;
+
 use gtk::prelude::*;
 use gtk::*;
+use gio::prelude::*;
+use gio::MenuExt;
+use gio::ApplicationFlags;
+use gio::Menu;
 
 use main_window::window::MainWindow;
 
+const app_id: &str = "org.gnome.example";
+
 fn main() {
-    if gtk::init().is_err() {
+
+    //https://wiki.gnome.org/HowDoI/ApplicationMenu
+
+
+    //https://github.com/gtk-rs/gtk/blob/master/src/auto/application.rs
+
+    //https://developer.gnome.org/gtk3/stable/GtkApplication.html#gtk-application-new
+    let app_res = gtk::Application::new(app_id, ApplicationFlags::FLAGS_NONE);
+
+    if app_res.is_err() {
         println!("Failed to initialize GTK.");
         return;
     }
 
-    let main_glade = include_str!("ui/filer.glade");
+    let app: gtk::Application = app_res.unwrap();
+
+    // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
+    // relative to the application's resource base path (see g_application_set_resour
+    //automatic resources dont seem to work?
+    app.set_resource_base_path(env!("PWD"));
+
+    // wrong we need the gio Menu, not the gtk menu!
+    // let menu = gtk::menu::new();
+
+    //https://wiki.gnome.org/HowDoI/ApplicationMenu
+
+    //http://gtk-rs.org/docs/gio/struct.Menu.html
+    let menu = gio::Menu::new();
+
+    menu.append("Copy", "win.copy");
+    menu.append("Paste", "win.paste");
+
+    //this does not work?!
+    app.set_app_menu(&menu);
+
+    let main_glade = include_str!("gtk/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     let main_window = MainWindow::new(&main_builder);
 
     main_window.init();
 
-    main_window.show();
+    app.connect_activate(move |app|{
+        println!("app activated");
 
+        //test
+        //this test window doesnt have client-side-decorations enabled by default
+        let other_app_window = gtk::ApplicationWindow::new(app);
+        other_app_window.set_show_menubar(true);
+
+        //to get client side decorations it needs a header bar!!
+        //https://stackoverflow.com/questions/21079506/how-do-client-side-decorations-work-with-gnome-3-10-and-gtk-3
+        let header = gtk::HeaderBar::new();
+        //TODO: there are some missing options i bet, set some options on headerl
+        header.set_visible(true);
+        header.set_show_close_button(true);
+        other_app_window.set_titlebar(&header);
+        other_app_window.show();
+        //this works but it somehow isnt visible?
+        //all of this works but we still dont get the menu like eog or nautilus..
+        //TODO FIXME
+
+        main_window.show(app);
+    });
+
+    app.run(&std::env::args().collect::<Vec<String>>());
     gtk::main();
     println!("End");
 }
