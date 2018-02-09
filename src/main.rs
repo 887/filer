@@ -40,22 +40,10 @@ fn main() {
 
     // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
     // relative to the application's resource base path (see g_application_set_resour
-    //automatic resources dont seem to work?
+    //automatic resources dont seem to work? Possibly wrong path and/or need to compile
+    //resources.xml with meson
     app.set_resource_base_path(env!("PWD"));
-
-    // wrong we need the gio Menu, not the gtk menu!
-    // let menu = gtk::menu::new();
-
-    //https://wiki.gnome.org/HowDoI/ApplicationMenu
-
-    //http://gtk-rs.org/docs/gio/struct.Menu.html
-    let menu = gio::Menu::new();
-
-    menu.append("Copy", "win.copy");
-    menu.append("Paste", "win.paste");
-
-    //this does not work?!
-    app.set_app_menu(&menu);
+    println!(env!("PWD"));
 
     let main_glade = include_str!("gtk/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
@@ -63,6 +51,22 @@ fn main() {
     let main_window = MainWindow::new(&main_builder);
 
     main_window.init();
+
+    app.connect_startup(|app| {
+        // wrong we need the gio Menu, not the gtk men
+        // let menu = gtk::menu::new();
+
+        //https://wiki.gnome.org/HowDoI/ApplicationMenu
+
+        //http://gtk-rs.org/docs/gio/struct.Menu.html
+        let menu = gio::Menu::new();
+
+        menu.append("Copy", "win.copy");
+        menu.append("Paste", "win.paste");
+
+        //this is expected to be done during application statup, otherwise it wont work
+        app.set_app_menu(&menu);
+    });
 
     app.connect_activate(move |app|{
         println!("app activated");
