@@ -38,13 +38,6 @@ fn main() {
 
     let app: gtk::Application = app_res.unwrap();
 
-    // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
-    // relative to the application's resource base path (see g_application_set_resour
-    //automatic resources dont seem to work? Possibly wrong path and/or need to compile
-    //resources.xml with meson
-    app.set_resource_base_path(env!("PWD"));
-    println!(env!("PWD"));
-
     let main_glade = include_str!("gtk/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
@@ -66,6 +59,14 @@ fn main() {
 
         //this is expected to be done during application statup, otherwise it wont work
         app.set_app_menu(&menu);
+
+        // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
+        // this is the alternaive, but it does not seem to work.
+        //
+        // app.set_resource_base_path(env!("PWD"));
+        // let pwd = "PWD:".to_string() + env!("PWD");
+        // println!("{}", &pwd);
+
     });
 
     app.connect_activate(move |app|{
