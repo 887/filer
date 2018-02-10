@@ -8,9 +8,7 @@ use gtk::prelude::*;
 use glib::signal::SignalHandlerId;
 
 use gio::prelude::*;
-use gio::MenuExt;
-use gio::ApplicationFlags;
-use gio::Menu;
+use gio::{MenuExt, ApplicationFlags, Menu};
 
 use main_window::header::*;
 use main_window::content::*;
@@ -57,8 +55,11 @@ impl MainWindow {
         main_window
     }
 
-    pub fn init(&self) {
-        self.window.connect_delete_event(&delete_event);
+    pub fn init(&self, app: &gtk::Application) {
+        self.window.connect_delete_event(clone!(app => move |_, _| {
+            app.quit();
+            gtk::Inhibit(false)
+        }));
         let _fileliststore = FileListStore::new();
         //TODO
     }
@@ -71,6 +72,7 @@ impl MainWindow {
         if let Some(menu) = maybe_menu {
             self.main_menu = Some(gtk::Menu::new_from_model(&menu));
         } else {
+            //fallback while application xml resource loading is broken
             self.create_menu(&app);
         }
 
@@ -112,34 +114,34 @@ impl MainWindow {
         //https://github.com/gtk-rs/examples/blob/master/src/bin/menu_bar_system.rs
 
         let help_overlay_action = gio::SimpleAction::new("show-help-overlay", None);
+        self.window.add_action(&help_overlay_action);
+
         let window = &self.window;
         help_overlay_action.connect_activate(clone!(window => move |_, _| {
             show_info_message_box(&window, "TODO: show overlay here");
-            let _result = show_yes_no_message_box(&window, "You won't, right?");
-            if _result {
+            let result = show_yes_no_message_box(&window, "You won't, right?");
+            if !result {
                 println!("no you won't!");
             }
         }));
 
-        self.window.add_action(&help_overlay_action);
+        let preferences_action = gio::SimpleAction::new("preferences", None);
+        app.add_action(&preferences_action);
 
-        // let app_action_map = gio::ActionMap::new();
-        // let prefrences_action = gio::SimpleAction::new("preferences");
+        let help_action = gio::SimpleAction::new("help", None);
+        app.add_action(&help_action);
 
-        //menubuttons must be buttons.. how to get them hmm
-        //TODO add action map/group for menu
-        //http://gtk-rs.org/docs/gio/struct.ActionMap.html
-        //http://gtk-rs.org/docs/gio/struct.ActionGroup.html
-        //
+        let about_action = gio::SimpleAction::new("about", None);
+        app.add_action(&about_action);
+
+        let quit_action = gio::SimpleAction::new("quit", None);
+        app.add_action(&quit_action);
+        quit_action.connect_activate(clone!(window => move |_, _| {
+            window.close();
+        }));
+
     }
-
 }
-
-fn delete_event(_: &gtk::ApplicationWindow, _: &gdk::Event) -> Inhibit {
-    gtk::main_quit();
-    gtk::Inhibit(false)
-}
-
 
 fn show_info_message_box(window: &gtk::ApplicationWindow, message: &str) {
     let message_dialog = gtk::MessageDialog::new(
@@ -148,24 +150,20 @@ fn show_info_message_box(window: &gtk::ApplicationWindow, message: &str) {
         MessageType::Info,
         ButtonsType::Ok,
         message,
-        );
-    let response = message_dialog.run();
+    );
+    let _response = message_dialog.run();
     message_dialog.destroy();
-    if ResponseType::from_glib(response) == ResponseType::Ok {
-        println!("ok clicked!");
-    }
 }
 
 fn show_yes_no_message_box(window: &gtk::ApplicationWindow, message: &str) -> bool {
     let message_dialog = gtk::MessageDialog::new(
         Some(window),
         DialogFlags::MODAL | DialogFlags::USE_HEADER_BAR | DialogFlags::DESTROY_WITH_PARENT,
-        MessageType::Info,
+        MessageType::Question,
         ButtonsType::YesNo,
         message,
-        );
+    );
     let response = message_dialog.run();
     message_dialog.destroy();
     ResponseType::from_glib(response) == ResponseType::Yes
 }
-

@@ -19,25 +19,23 @@ use gio::ApplicationFlags;
 
 use main_window::window::MainWindow;
 
-const APP_ID: &str = "org.gnome.example";
+const APP_ID: &str = "a887.filer";
 
 fn main() {
-    //https://github.com/gtk-rs/gtk/blob/master/src/auto/application.rs
-    //https://developer.gnome.org/gtk3/stable/GtkApplication.html#gtk-application-new
-    let app_res = gtk::Application::new(APP_ID, ApplicationFlags::FLAGS_NONE);
+    let app_result = gtk::Application::new(APP_ID, ApplicationFlags::FLAGS_NONE);
 
-    if app_res.is_err() {
+    if app_result.is_err() {
         println!("Failed to initialize GTK.");
         return;
     }
 
-    let app: gtk::Application = app_res.unwrap();
+    let app: gtk::Application = app_result.unwrap();
 
     let main_glade = include_str!("gtk/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     let main_window = MainWindow::new(&main_builder);
-    main_window.init();
+    main_window.init(&app);
 
     let window_ref = Rc::new(RefCell::new(main_window));
 
@@ -45,7 +43,7 @@ fn main() {
     app.connect_startup(move |app| {
         use std::env;
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
-        // this is the alternaive, but it does not seem to work.
+        // The idea is to load the menu from the xml resources, but it does not seem to work.
         //
         // app.set_resource_base_path(env!("PWD"));
         // let pwd = "PWD:".to_string() + env!("PWD");
@@ -56,12 +54,30 @@ fn main() {
 
     let window_ref_activate = window_ref.clone();
     app.connect_activate(move |app| {
-        println!("app activated");
-
         window_ref_activate.borrow_mut().activate(app);
     });
 
+    app.connect_shutdown(move |_app| {
+        println!("End");
+    });
+
     app.run(&std::env::args().collect::<Vec<String>>());
-    gtk::main();
-    println!("End");
 }
+
+#[cfg(test)]
+mod experiments;
+
+#[test]
+fn run_works() {
+    experiments::run_experiments();
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_true!(true);
+    }
+}
+
+
