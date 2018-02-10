@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use gtk::*;
 use gtk::prelude::*;
 use gtk::ListStoreExt;
@@ -17,9 +19,9 @@ impl FileListStore {
     }
     pub fn fill_from_path(&mut self, path: &Path){
         let paths = fs::read_dir(path);
-        for path in paths {
+        for _path in paths {
             let tree_iter = self.list_store.append();
-            let tree_iter = self.list_store.set(
+            let _tree_iter = self.list_store.set(
                 &tree_iter,
                 &[0, 1, 2],
                 &[&String::from(""), &String::from(""), &String::from("")]);

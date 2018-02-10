@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 // #![feature(trace_macros)]
 // trace_macros!(true);
 
@@ -64,61 +66,3 @@ fn main() {
     gtk::main();
     println!("End");
 }
-
-// fn create_test_window(app: &gtk::Application) {
-//     //test
-//     //this test window doesnt have client-side-decorations enabled by default
-//     let other_app_window = gtk::ApplicationWindow::new(app);
-//     other_app_window.set_show_menubar(true);
-//
-//     //to get client side decorations it needs a header bar!!
-//     //https://stackoverflow.com/questions/21079506/how-do-client-side-decorations-work-with-gnome-3-10-and-gtk-3
-//     let header = gtk::HeaderBar::new();
-//     //TODO: there are some missing options i bet, set some options on headerl
-//     header.set_visible(true);
-//     header.set_show_close_button(true);
-//     other_app_window.set_titlebar(&header);
-//     other_app_window.show();
-// }
-
-//let button: Button = main_builder.get_object("button1").unwrap();
-//let dialog: MessageDialog = main_builder.get_object("messagedialog1").unwrap();
-
-//{
-//let dialog = dialog.clone();
-//dialog.hide();
-//}
-
-//{
-//let dialog = dialog.clone();
-//button.connect_clicked(move |_| {
-//dialog.run();
-//dialog.hide();
-//});
-//}
-
-//let main_window: Window = main_builder.get_object::<Window>("window1").unwrap();
-// list store is a little like a record set
-//let list_store: ListStore = main_builder.get_object("filer_liststore").unwrap();
-
-//let iter = list_store.append();
-//let column = 0;
-//let value = gtk::Value::from("teapot");
-
-//list_store.set_value(&iter, column, &value);
-
-//let window = Window::new(WindowType::Toplevel);
-//window.set_title("First GTK+ Program");
-//window.set_default_size(350, 70);
-//let button = Button::new_with_label("Click me!");
-//window.add(&button);
-//window.show_all();
-
-//window.connect_delete_event(|_, _| {
-//gtk::main_quit();
-//Inhibit(false)
-//});
-
-//button.connect_clicked(|_| {
-//println!("Clicked!");
-//});

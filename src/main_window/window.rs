@@ -1,7 +1,7 @@
-extern crate gtk;
-extern crate glib;
 extern crate gdk;
 extern crate gio;
+extern crate glib;
+extern crate gtk;
 
 use gtk::*;
 use gtk::prelude::*;
@@ -16,7 +16,7 @@ use main_window::header::*;
 use main_window::content::*;
 use main_window::fileliststore::*;
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
     pub header: Header,
@@ -24,7 +24,7 @@ pub struct MainWindow {
     pub main_menu: Option<gtk::Menu>,
 }
 
-fn delete_event(s: &gtk::ApplicationWindow, f: &gdk::Event) -> Inhibit {
+fn delete_event(_: &gtk::ApplicationWindow, _: &gdk::Event) -> Inhibit {
     gtk::main_quit();
     Inhibit(false)
 }
@@ -43,15 +43,15 @@ impl MainWindow {
     }
     pub fn init(&self) {
         self.window.connect_delete_event(&delete_event);
-
-        let fileliststore = FileListStore::new();
+        let _fileliststore = FileListStore::new();
+        //TODO
     }
     pub fn init_menu(&mut self, app: &gtk::Application) {
         //https://wiki.gnome.org/HowDoI/ApplicationMenu
         //http://gtk-rs.org/docs/gio/struct.Menu.html
 
         let maybe_menu = app.get_app_menu();
-        if let Some(menu) = maybe_menu  {
+        if let Some(menu) = maybe_menu {
             self.connect_menu(menu);
         } else {
             self.create_menu(&app);
@@ -69,7 +69,7 @@ impl MainWindow {
         menu_actions.append("_Help", "app.help");
         menu_actions.append("_About", "app.about");
 
-        let quit_menu_item = gio::MenuItem::new("_Quit","app.quit");
+        let quit_menu_item = gio::MenuItem::new("_Quit", "app.quit");
         menu_actions.append_item(&quit_menu_item);
 
         menu_main.append_section(None, &menu_actions);
@@ -81,6 +81,12 @@ impl MainWindow {
     }
     fn connect_menu(&mut self, menu_main: gio::MenuModel) {
         self.main_menu = Some(gtk::Menu::new_from_model(&menu_main));
+
+        //menubuttons must be buttons.. how to get them hmm
+        //TODO add action map/group for menu
+        //http://gtk-rs.org/docs/gio/struct.ActionMap.html
+        //http://gtk-rs.org/docs/gio/struct.ActionGroup.html
+        //
     }
     pub fn show(&self, app: &gtk::Application) {
         //add window to appplication. This show the app menu when needed
