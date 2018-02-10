@@ -1,9 +1,9 @@
 use gtk::*;
 use gtk::prelude::*;
 
+#[derive(Clone)]
 pub struct Header {
     pub header_bar: HeaderBar,
-    pub file_menu_button: MenuButton,
     pub back_button: Button,
     pub forward_button: Button,
     pub up_button: Button,
@@ -18,7 +18,6 @@ impl Header {
     pub fn new(main_builder: &Builder) -> Header {
         let header = Header {
             header_bar: main_builder.get_object::<HeaderBar>("header").unwrap(),
-            file_menu_button: main_builder.get_object::<MenuButton>("file_button").unwrap(),
             back_button: main_builder.get_object::<Button>("back_button").unwrap(),
             forward_button: main_builder.get_object::<Button>("forward_button").unwrap(),
             up_button: main_builder.get_object::<Button>("up_button").unwrap(),

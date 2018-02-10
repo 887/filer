@@ -8,28 +8,21 @@ extern crate gio;
 
 mod main_window;
 
-use std::env;
+use std::rc::Rc;
+use std::cell::RefCell;
 
-use gtk::prelude::*;
 use gtk::*;
 use gio::prelude::*;
-use gio::MenuExt;
 use gio::ApplicationFlags;
-use gio::Menu;
 
 use main_window::window::MainWindow;
 
-const app_id: &str = "org.gnome.example";
+const APP_ID: &str = "org.gnome.example";
 
 fn main() {
-
-    //https://wiki.gnome.org/HowDoI/ApplicationMenu
-
-
     //https://github.com/gtk-rs/gtk/blob/master/src/auto/application.rs
-
     //https://developer.gnome.org/gtk3/stable/GtkApplication.html#gtk-application-new
-    let app_res = gtk::Application::new(app_id, ApplicationFlags::FLAGS_NONE);
+    let app_res = gtk::Application::new(APP_ID, ApplicationFlags::FLAGS_NONE);
 
     if app_res.is_err() {
         println!("Failed to initialize GTK.");
@@ -45,21 +38,11 @@ fn main() {
 
     main_window.init();
 
-    app.connect_startup(|app| {
-        // wrong we need the gio Menu, not the gtk men
-        // let menu = gtk::menu::new();
+    let window_ref = Rc::new(RefCell::new(main_window));
 
-        //https://wiki.gnome.org/HowDoI/ApplicationMenu
-
-        //http://gtk-rs.org/docs/gio/struct.Menu.html
-        let menu = gio::Menu::new();
-
-        menu.append("Copy", "win.copy");
-        menu.append("Paste", "win.paste");
-
-        //this is expected to be done during application statup, otherwise it wont work
-        app.set_app_menu(&menu);
-
+    let window_ref_startup = window_ref.clone();
+    app.connect_startup(move |app| {
+        use std::env;
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         // this is the alternaive, but it does not seem to work.
         //
@@ -67,12 +50,14 @@ fn main() {
         // let pwd = "PWD:".to_string() + env!("PWD");
         // println!("{}", &pwd);
 
+        window_ref_startup.borrow_mut().init_menu(&app);
     });
 
+    let window_ref_activate = window_ref.clone();
     app.connect_activate(move |app|{
         println!("app activated");
 
-        main_window.show(app);
+        window_ref_activate.borrow_mut().show(app);
     });
 
     app.run(&std::env::args().collect::<Vec<String>>());

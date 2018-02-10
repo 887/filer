@@ -1,6 +1,7 @@
 use gtk::*;
 use gtk::prelude::*;
 
+#[derive(Clone)]
 pub struct Content {
 }
 
