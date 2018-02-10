@@ -4,6 +4,8 @@ use gtk::*;
 use gio::prelude::*;
 use gio::ApplicationFlags;
 
+use glib::translate::*;
+
 // file to experiment with gtk
 
 pub fn run_experiments(app: &gtk::Application) {
@@ -24,5 +26,20 @@ fn create_test_window(app: &gtk::Application) {
 
     other_app_window.set_titlebar(&header);
     other_app_window.show();
+}
+
+fn show_masagebox(window: gtk::Window) {
+    let message_dialog = gtk::MessageDialog::new(
+        Some(&window),
+        DialogFlags::MODAL | DialogFlags::USE_HEADER_BAR | DialogFlags::DESTROY_WITH_PARENT,
+        MessageType::Info,
+        ButtonsType::Ok,
+        "TODO: show overlay here",
+        );
+    let response = message_dialog.run();
+    message_dialog.destroy();
+    if ResponseType::from_glib(response) == ResponseType::Ok {
+        println!("ok clicked!");
+    }
 }
 

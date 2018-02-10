@@ -4,9 +4,9 @@
 // trace_macros!(true);
 
 //#[macro_use]
-extern crate gtk;
-extern crate glib;
 extern crate gio;
+extern crate glib;
+extern crate gtk;
 
 mod main_window;
 
@@ -37,7 +37,6 @@ fn main() {
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     let main_window = MainWindow::new(&main_builder);
-
     main_window.init();
 
     let window_ref = Rc::new(RefCell::new(main_window));
@@ -52,14 +51,14 @@ fn main() {
         // let pwd = "PWD:".to_string() + env!("PWD");
         // println!("{}", &pwd);
 
-        window_ref_startup.borrow_mut().init_menu(&app);
+        window_ref_startup.borrow_mut().startup(&app);
     });
 
     let window_ref_activate = window_ref.clone();
-    app.connect_activate(move |app|{
+    app.connect_activate(move |app| {
         println!("app activated");
 
-        window_ref_activate.borrow_mut().show(app);
+        window_ref_activate.borrow_mut().activate(app);
     });
 
     app.run(&std::env::args().collect::<Vec<String>>());

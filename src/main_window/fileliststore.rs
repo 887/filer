@@ -17,16 +17,16 @@ impl FileListStore {
             list_store: ListStore::new(&[Type::String, Type::String, Type::String]),
         }
     }
-    pub fn fill_from_path(&mut self, path: &Path){
+
+    pub fn fill_from_path(&mut self, path: &Path) {
         let paths = fs::read_dir(path);
         for _path in paths {
             let tree_iter = self.list_store.append();
             let _tree_iter = self.list_store.set(
                 &tree_iter,
                 &[0, 1, 2],
-                &[&String::from(""), &String::from(""), &String::from("")]);
+                &[&String::from(""), &String::from(""), &String::from("")],
+            );
         }
     }
 }
-
-
