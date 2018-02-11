@@ -1,0 +1,46 @@
+{
+    "app-id" : "a887.Filer",
+        "runtime" : "org.gnome.Platform",
+        "runtime-version" : "master",
+        "sdk" : "org.gnome.Sdk",
+        "sdk-extensions" : [
+            "org.freedesktop.Sdk.Extension.rust-stable"
+        ],
+        "command" : "filer",
+        "tags" : [
+            "nightly"
+        ],
+        "desktop-file-name-prefix" : "(Nightly) ",
+        "finish-args" : [
+            "--share=network",
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--talk-name=org.freedesktop.secrets",
+        "--talk-name=org.freedesktop.Notifications",
+        "--filesystem=home"
+        ],
+        "build-options" : {
+            "append-path" : "/usr/lib/sdk/rust-stable/bin",
+            "build-args" : [
+                "--share=network"
+            ],
+            "env" : {
+                "CARGO_HOME" : "/run/build/Filer/cargo",
+                "DEBUG" : "true"
+            }
+        },
+        "modules" : [
+        {
+            "name" : "Filer",
+            "buildsystem" : "meson",
+            "sources" : [
+            {
+                "type" : "git",
+                "url" : "https://github.com/887/filer.git"
+            }
+            ]
+        }
+        ]
+}
+

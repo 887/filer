@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use glib::signal::SignalHandlerId;
 
 use gio::prelude::*;
-use gio::{MenuExt, ApplicationFlags, Menu};
+use gio::{ApplicationFlags, Menu, MenuExt};
 
 use main_window::header::*;
 use main_window::content::*;
@@ -39,6 +39,8 @@ pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
     pub header: Header,
     pub contents: Content,
+    pub path_label: gtk::Label,
+    pub content_box: gtk::Box,
     pub main_menu: Option<gtk::Menu>,
 }
 
@@ -48,6 +50,8 @@ impl MainWindow {
             window: builder.get_object::<ApplicationWindow>("window1").unwrap(),
             header: Header::new(builder),
             contents: Content::new(builder),
+            path_label: builder.get_object::<gtk::Label>("path_label").unwrap(),
+            content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
         };
 
@@ -65,9 +69,6 @@ impl MainWindow {
     }
 
     pub fn startup(&mut self, app: &gtk::Application) {
-        //https://wiki.gnome.org/HowDoI/ApplicationMenu
-        //http://gtk-rs.org/docs/gio/struct.Menu.html
-
         let maybe_menu = app.get_app_menu();
         if let Some(menu) = maybe_menu {
             self.main_menu = Some(gtk::Menu::new_from_model(&menu));
@@ -83,6 +84,10 @@ impl MainWindow {
         //add window to appplication. This show the app menu when needed
         app.add_window(&self.window);
         self.window.show_all();
+    }
+
+    pub fn shutdown(&self, _app: &gtk::Application) {
+        println!("");
     }
 
     fn create_menu(&mut self, app: &gtk::Application) {
@@ -109,10 +114,7 @@ impl MainWindow {
     }
 
     fn map_actions(&mut self, app: &gtk::Application) {
-        //https://wiki.gnome.org/HowDoI/GAction
-        //here is a good example:
-        //https://github.com/gtk-rs/examples/blob/master/src/bin/menu_bar_system.rs
-
+        //window actions
         let help_overlay_action = gio::SimpleAction::new("show-help-overlay", None);
         self.window.add_action(&help_overlay_action);
 
@@ -125,11 +127,22 @@ impl MainWindow {
             }
         }));
 
+        //app actions
         let preferences_action = gio::SimpleAction::new("preferences", None);
         app.add_action(&preferences_action);
 
         let help_action = gio::SimpleAction::new("help", None);
         app.add_action(&help_action);
+        help_action.connect_activate(clone!(window => move |_, _| {
+            //gtk_application_window_set_help_overlay ()
+            //gtk_application_window_get_help_overlay ()
+            let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
+            if let Some(help_window) = help_window {
+                help_window.show();
+            } else {
+                show_info_message_box(&window, "Help me!");
+            }
+        }));
 
         let about_action = gio::SimpleAction::new("about", None);
         app.add_action(&about_action);
@@ -139,7 +152,6 @@ impl MainWindow {
         quit_action.connect_activate(clone!(window => move |_, _| {
             window.close();
         }));
-
     }
 }
 

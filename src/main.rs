@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+#![allow(dead_code)]
 
 // #![feature(trace_macros)]
 // trace_macros!(true);
@@ -21,6 +22,17 @@ use main_window::window::MainWindow;
 
 const APP_ID: &str = "a887.filer";
 
+#[cfg(feature = "experiments")]
+mod experiments;
+
+// cargo run --features "experiments"
+#[cfg(feature = "experiments")]
+fn main() {
+    println!("experiments");
+    experiments::run_experiments();
+}
+
+#[cfg(not(feature = "experiments"))]
 fn main() {
     let app_result = gtk::Application::new(APP_ID, ApplicationFlags::FLAGS_NONE);
 
@@ -34,12 +46,6 @@ fn main() {
     let main_glade = include_str!("gtk/filer.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
-    let main_window = MainWindow::new(&main_builder);
-    main_window.init(&app);
-
-    let window_ref = Rc::new(RefCell::new(main_window));
-
-    let window_ref_startup = window_ref.clone();
     app.connect_startup(move |app| {
         use std::env;
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
@@ -49,35 +55,31 @@ fn main() {
         // let pwd = "PWD:".to_string() + env!("PWD");
         // println!("{}", &pwd);
 
-        window_ref_startup.borrow_mut().startup(&app);
-    });
+        let mut main_window = MainWindow::new(&main_builder);
+        main_window.init(&app);
+        main_window.startup(app);
 
-    let window_ref_activate = window_ref.clone();
-    app.connect_activate(move |app| {
-        window_ref_activate.borrow_mut().activate(app);
-    });
+        let window_ref = Rc::new(RefCell::new(main_window));
 
-    app.connect_shutdown(move |_app| {
-        println!("End");
+        let window_ref_activate = window_ref.clone();
+        app.connect_activate(move |app| {
+            window_ref_activate.borrow_mut().activate(app);
+        });
+
+        let window_ref_shutdown = window_ref.clone();
+        app.connect_shutdown(move |app| {
+            window_ref_shutdown.borrow_mut().shutdown(app);
+            println!("End");
+        });
     });
 
     app.run(&std::env::args().collect::<Vec<String>>());
 }
 
 #[cfg(test)]
-mod experiments;
-
-#[test]
-fn run_works() {
-    experiments::run_experiments();
-}
-
-#[cfg(test)]
 mod tests {
     #[test]
     fn it_works() {
-        assert_true!(true);
+        assert!(true);
     }
 }
-
-

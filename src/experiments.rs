@@ -7,18 +7,21 @@ extern crate gtk;
 
 use std;
 
+use std::rc::Rc;
+use std::cell::RefCell;
+
 use gtk::*;
 use gtk::prelude::*;
 use glib::signal::SignalHandlerId;
 
 use gio::prelude::*;
-use gio::{MenuExt, ApplicationFlags, Menu};
+use gio::{ApplicationFlags, Menu, MenuExt};
 
 use glib::translate::*;
 
 // file to experiment with gtk
 
-// other gnome apps made in rust that can be used as examples:
+// this seems to be a real gnome app made in rust, that can be used as example?:
 // https://gitlab.gnome.org/danigm/fractal
 
 // make moving clones into closures more convenient
@@ -51,20 +54,22 @@ pub fn run_experiments() {
 
     let app: gtk::Application = app_res.unwrap();
 
-    let window = create_test_window(&app);
-    window.connect_delete_event(clone!(app => move |_, _| {
-        app.quit();
-        gtk::Inhibit(false)
-    }));
-
     app.connect_startup(move |app| {
         println!("App Startup");
         create_menu(app);
-    });
 
-    app.connect_activate(move |_app| {
-        println!("App Activated");
-        window.show();
+        let window = create_test_window(&app);
+        app.connect_activate(clone!(window => move |app| {
+            println!("App Activated");
+            map_actions(app, &window);
+            window.show();
+        }));
+
+        window.connect_delete_event(clone!(app => move |_, _| {
+            println!("Window Deleted");
+            app.quit();
+            gtk::Inhibit(false)
+        }));
     });
 
     app.connect_shutdown(move |_app| {
@@ -97,7 +102,7 @@ fn show_info_message_box(window: &gtk::ApplicationWindow, message: &str) {
         MessageType::Info,
         ButtonsType::Ok,
         message,
-        );
+    );
     let response = message_dialog.run();
     message_dialog.destroy();
     if ResponseType::from_glib(response) == ResponseType::Ok {
@@ -107,6 +112,9 @@ fn show_info_message_box(window: &gtk::ApplicationWindow, message: &str) {
 
 /// this is expected to be done during application statup, otherwise it wont work
 fn create_menu(app: &gtk::Application) {
+    //https://wiki.gnome.org/HowDoI/ApplicationMenu
+    //http://gtk-rs.org/docs/gio/struct.Menu.html
+
     //here is a good example:
     //https://github.com/gtk-rs/examples/blob/master/src/bin/menu_bar_system.rs
 
@@ -122,17 +130,29 @@ fn create_menu(app: &gtk::Application) {
 fn map_actions(app: &gtk::Application, window: &gtk::ApplicationWindow) {
     //https://wiki.gnome.org/HowDoI/GAction
 
+    //window actions
     let help_action = gio::SimpleAction::new("help", None);
     window.add_action(&help_action);
     help_action.connect_activate(clone!(window => move |_, _| {
-        show_info_message_box(&window, "Help me!");
+        //gtk_application_window_set_help_overlay ()
+        //gtk_application_window_get_help_overlay ()
+        let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
+        if let Some(help_window) = help_window {
+            help_window.show();
+        } else {
+            show_info_message_box(&window, "Help me!");
+        }
     }));
 
-    let preferences_action = gio::SimpleAction::new("preferences", None);
+    //app actions
+    let preferences_action = gio::SimpleAction::new("about", None);
     app.add_action(&preferences_action);
-
-    help_action.connect_activate(clone!(window => move |_, _| {
-        show_info_message_box(&window, "Help me!");
+    preferences_action.connect_activate(clone!(window => move |_, _| {
+        show_info_message_box(&window, "You know to much about me!");
+    }));
+    let quit_action = gio::SimpleAction::new("quit", None);
+    app.add_action(&quit_action);
+    quit_action.connect_activate(clone!(window => move |_, _| {
+        window.close();
     }));
 }
-
