@@ -5,8 +5,8 @@
   <object class="GtkApplicationWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Builder Basics</property>
-    <property name="default_width">800</property>
-    <property name="default_height">600</property>
+    <property name="default_width">1500</property>
+    <property name="default_height">1000</property>
     <property name="icon_name">computer</property>
     <property name="show_menubar">False</property>
     <child>
@@ -15,20 +15,17 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkStack" id="stack1">
+          <object class="GtkSearchBar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
             <child>
-              <object class="GtkLabel" id="path_label">
+              <object class="GtkSearchEntry">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">/home/</property>
+                <property name="can_focus">True</property>
+                <property name="primary_icon_name">edit-find-symbolic</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">False</property>
               </object>
-              <packing>
-                <property name="name">page0</property>
-                <property name="title" translatable="yes">page0</property>
-              </packing>
             </child>
           </object>
           <packing>
@@ -182,18 +179,20 @@
           </packing>
         </child>
         <child type="title">
-          <object class="GtkStackSwitcher" id="main_stack_switcher">
+          <object class="GtkEntry" id="path_entry">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="stack">stack1</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="text" translatable="yes">/home/887/</property>
           </object>
         </child>
         <child>
-          <object class="GtkToggleButton" id="icons_view_toggle_button1">
+          <object class="GtkToggleButton" id="side_panel_toggle_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="vexpand">True</property>
+            <property name="active">True</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -262,6 +261,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="active">True</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>

@@ -11,7 +11,6 @@ pub struct Header {
     pub details_view_toggle_button: ToggleButton,
     pub icons_view_toggle_button: ToggleButton,
     pub names_view_toggle_button: ToggleButton,
-    pub main_stack_switcher: StackSwitcher,
 }
 
 impl Header {
@@ -32,9 +31,6 @@ impl Header {
                 .unwrap(),
             names_view_toggle_button: main_builder
                 .get_object::<ToggleButton>("names_view_toggle_button")
-                .unwrap(),
-            main_stack_switcher: main_builder
-                .get_object::<StackSwitcher>("main_stack_switcher")
                 .unwrap(),
         };
 

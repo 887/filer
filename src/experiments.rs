@@ -120,7 +120,7 @@ fn create_menu(app: &gtk::Application) {
 
     let menu_main = gio::Menu::new();
 
-    menu_main.append("_Help", "win.help");
+    menu_main.append("_Keyboard Shortcuts", "win.show-help-overlay");
     menu_main.append("_About", "app.about");
     menu_main.append("_Quit", "app.quit");
 
@@ -131,7 +131,7 @@ fn map_actions(app: &gtk::Application, window: &gtk::ApplicationWindow) {
     //https://wiki.gnome.org/HowDoI/GAction
 
     //window actions
-    let help_action = gio::SimpleAction::new("help", None);
+    let help_action = gio::SimpleAction::new("show-help-overlay", None);
     window.add_action(&help_action);
     help_action.connect_activate(clone!(window => move |_, _| {
         //gtk_application_window_set_help_overlay ()
@@ -140,7 +140,7 @@ fn map_actions(app: &gtk::Application, window: &gtk::ApplicationWindow) {
         if let Some(help_window) = help_window {
             help_window.show();
         } else {
-            show_info_message_box(&window, "Help me!");
+            show_info_message_box(&window, "Show Help Overlay here!");
         }
     }));
 

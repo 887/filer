@@ -39,7 +39,7 @@ pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
     pub header: Header,
     pub contents: Content,
-    pub path_label: gtk::Label,
+    pub path_entry: gtk::Entry,
     pub content_box: gtk::Box,
     pub main_menu: Option<gtk::Menu>,
 }
@@ -50,7 +50,7 @@ impl MainWindow {
             window: builder.get_object::<ApplicationWindow>("window1").unwrap(),
             header: Header::new(builder),
             contents: Content::new(builder),
-            path_label: builder.get_object::<gtk::Label>("path_label").unwrap(),
+            path_entry: builder.get_object::<gtk::Entry>("path_entry").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
         };
@@ -66,6 +66,7 @@ impl MainWindow {
         }));
         let _fileliststore = FileListStore::new();
         //TODO
+
     }
 
     pub fn startup(&mut self, app: &gtk::Application) {
@@ -120,10 +121,13 @@ impl MainWindow {
 
         let window = &self.window;
         help_overlay_action.connect_activate(clone!(window => move |_, _| {
-            show_info_message_box(&window, "TODO: show overlay here");
-            let result = show_yes_no_message_box(&window, "You won't, right?");
-            if !result {
-                println!("no you won't!");
+            //gtk_application_window_set_help_overlay ()
+            //gtk_application_window_get_help_overlay ()
+            let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
+            if let Some(help_window) = help_window {
+                help_window.show();
+            } else {
+                show_info_message_box(&window, "Help me!");
             }
         }));
 
@@ -134,13 +138,10 @@ impl MainWindow {
         let help_action = gio::SimpleAction::new("help", None);
         app.add_action(&help_action);
         help_action.connect_activate(clone!(window => move |_, _| {
-            //gtk_application_window_set_help_overlay ()
-            //gtk_application_window_get_help_overlay ()
-            let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
-            if let Some(help_window) = help_window {
-                help_window.show();
-            } else {
-                show_info_message_box(&window, "Help me!");
+            show_info_message_box(&window, "TODO: show overlay here");
+            let result = show_yes_no_message_box(&window, "You won't, right?");
+            if !result {
+                println!("no you won't!");
             }
         }));
 
