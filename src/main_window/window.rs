@@ -51,8 +51,9 @@ pub struct MainWindow {
     pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
     pub left_tree_view: gtk::TreeView,
-    pub middle_tree_view: gtk::TreeView,
-    pub right_tree_view: gtk::TreeView,
+    pub left_scrolled_window: gtk::ScrolledWindow,
+    pub middle_scrolled_window: gtk::ScrolledWindow,
+    pub right_scrolled_window: gtk::ScrolledWindow,
 }
 
 impl MainWindow {
@@ -70,9 +71,18 @@ impl MainWindow {
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
-            left_tree_view: builder.get_object::<gtk::TreeView>("left_tree_view").unwrap(),
-            middle_tree_view: builder.get_object::<gtk::TreeView>("middle_tree_view").unwrap(),
-            right_tree_view: builder.get_object::<gtk::TreeView>("right_tree_view").unwrap(),
+            left_tree_view: builder
+                .get_object::<gtk::TreeView>("left_tree_view")
+                .unwrap(),
+            left_scrolled_window: builder
+                .get_object::<gtk::ScrolledWindow>("left_scrolled_window")
+                .unwrap(),
+            middle_scrolled_window: builder
+                .get_object::<gtk::ScrolledWindow>("middle_scrolled_window")
+                .unwrap(),
+            right_scrolled_window: builder
+                .get_object::<gtk::ScrolledWindow>("right_scrolled_window")
+                .unwrap(),
         };
 
         main_window.window.set_title("Filer");
@@ -93,17 +103,6 @@ impl MainWindow {
             if !header.is_any_view_toogle_button_active() {
                 button.set_active(true);
             } else {
-                header.names_view_toggle_button.set_active(false);
-                header.details_view_toggle_button.set_active(false);
-            }
-        }));
-        header
-            .names_view_toggle_button
-            .connect_clicked(clone!(header => move |button| {
-            if !header.is_any_view_toogle_button_active() {
-                button.set_active(true);
-            } else {
-                header.icons_view_toggle_button.set_active(false);
                 header.details_view_toggle_button.set_active(false);
             }
         }));
@@ -113,7 +112,6 @@ impl MainWindow {
             if !header.is_any_view_toogle_button_active() {
                 button.set_active(true);
             } else {
-                header.names_view_toggle_button.set_active(false);
                 header.icons_view_toggle_button.set_active(false);
             }
         }));

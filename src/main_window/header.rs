@@ -10,7 +10,6 @@ pub struct Header {
     pub find_toggle_button: ToggleButton,
     pub details_view_toggle_button: ToggleButton,
     pub icons_view_toggle_button: ToggleButton,
-    pub names_view_toggle_button: ToggleButton,
 }
 
 impl Header {
@@ -29,9 +28,6 @@ impl Header {
             icons_view_toggle_button: main_builder
                 .get_object::<ToggleButton>("icons_view_toggle_button")
                 .unwrap(),
-            names_view_toggle_button: main_builder
-                .get_object::<ToggleButton>("names_view_toggle_button")
-                .unwrap(),
         };
 
         header
@@ -39,7 +35,6 @@ impl Header {
 
     pub fn is_any_view_toogle_button_active(&self) -> bool {
         self.details_view_toggle_button.get_active() ||
-        self.icons_view_toggle_button.get_active() ||
-        self.names_view_toggle_button.get_active()
+        self.icons_view_toggle_button.get_active()
     }
 }
