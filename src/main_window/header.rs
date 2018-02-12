@@ -1,7 +1,7 @@
 use gtk::*;
 use gtk::prelude::*;
 
-// #[derive(Clone)]
+#[derive(Clone)]
 pub struct Header {
     pub header_bar: HeaderBar,
     pub back_button: Button,
@@ -34,12 +34,12 @@ impl Header {
                 .unwrap(),
         };
 
-        header.names_view_toggle_button.connect_clicked(|_| {
-            println!("test");
-        });
-
-        header.names_view_toggle_button.emit_activate();
-
         header
+    }
+
+    pub fn is_any_view_toogle_button_active(&self) -> bool {
+        self.details_view_toggle_button.get_active() ||
+        self.icons_view_toggle_button.get_active() ||
+        self.names_view_toggle_button.get_active()
     }
 }

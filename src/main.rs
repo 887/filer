@@ -20,7 +20,7 @@ use gio::ApplicationFlags;
 
 use main_window::window::MainWindow;
 
-const APP_ID: &str = "a887.filer";
+const APP_ID: &str = "a887.Filer";
 
 #[cfg(feature = "experiments")]
 mod experiments;

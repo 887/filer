@@ -3,6 +3,9 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
+use std::fs;
+use std::path::PathBuf;
+
 use gtk::*;
 use gtk::prelude::*;
 use glib::signal::SignalHandlerId;
@@ -34,6 +37,9 @@ macro_rules! clone {
         );
 }
 
+//TODO: save window state
+//https://wiki.gnome.org/HowDoI/SaveWindowState
+
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
@@ -41,18 +47,32 @@ pub struct MainWindow {
     pub contents: Content,
     pub path_entry: gtk::Entry,
     pub content_box: gtk::Box,
+    pub search_entry: gtk::SearchEntry,
+    pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
+    pub left_tree_view: gtk::TreeView,
+    pub middle_tree_view: gtk::TreeView,
+    pub right_tree_view: gtk::TreeView,
 }
 
 impl MainWindow {
     pub fn new(builder: &Builder) -> MainWindow {
         let main_window = MainWindow {
-            window: builder.get_object::<ApplicationWindow>("window1").unwrap(),
+            window: builder
+                .get_object::<ApplicationWindow>("main_application_window")
+                .unwrap(),
             header: Header::new(builder),
             contents: Content::new(builder),
             path_entry: builder.get_object::<gtk::Entry>("path_entry").unwrap(),
+            search_entry: builder
+                .get_object::<gtk::SearchEntry>("search_entry")
+                .unwrap(),
+            search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
+            left_tree_view: builder.get_object::<gtk::TreeView>("left_tree_view").unwrap(),
+            middle_tree_view: builder.get_object::<gtk::TreeView>("middle_tree_view").unwrap(),
+            right_tree_view: builder.get_object::<gtk::TreeView>("right_tree_view").unwrap(),
         };
 
         main_window.window.set_title("Filer");
@@ -60,13 +80,60 @@ impl MainWindow {
     }
 
     pub fn init(&self, app: &gtk::Application) {
-        self.window.connect_delete_event(clone!(app => move |_, _| {
+        self.window
+            .connect_delete_event(clone!(app => move |_window, _event| {
             app.quit();
             gtk::Inhibit(false)
         }));
-        let _fileliststore = FileListStore::new();
-        //TODO
 
+        let header = &self.header;
+        header
+            .icons_view_toggle_button
+            .connect_clicked(clone!(header => move |button| {
+            if !header.is_any_view_toogle_button_active() {
+                button.set_active(true);
+            } else {
+                header.names_view_toggle_button.set_active(false);
+                header.details_view_toggle_button.set_active(false);
+            }
+        }));
+        header
+            .names_view_toggle_button
+            .connect_clicked(clone!(header => move |button| {
+            if !header.is_any_view_toogle_button_active() {
+                button.set_active(true);
+            } else {
+                header.icons_view_toggle_button.set_active(false);
+                header.details_view_toggle_button.set_active(false);
+            }
+        }));
+        header
+            .details_view_toggle_button
+            .connect_clicked(clone!(header => move |button| {
+            if !header.is_any_view_toogle_button_active() {
+                button.set_active(true);
+            } else {
+                header.names_view_toggle_button.set_active(false);
+                header.icons_view_toggle_button.set_active(false);
+            }
+        }));
+
+        let search_bar = &self.search_bar;
+        header
+            .find_toggle_button
+            .connect_clicked(clone!(search_bar => move |button| {
+            search_bar.set_search_mode(button.get_active());
+        }));
+
+        let search_entry = &self.search_entry;
+        search_entry.connect_stop_search(clone!(header => move |_search_entry| {
+            header.find_toggle_button.set_active(false);
+        }));
+
+        let mut fileliststore = FileListStore::new();
+        fileliststore.fill_from_path(&PathBuf::from("/home/laragana"));
+        println!("file count: {}", fileliststore.count);
+        self.left_tree_view.set_model(&fileliststore.list_store);
     }
 
     pub fn startup(&mut self, app: &gtk::Application) {
@@ -120,7 +187,8 @@ impl MainWindow {
         self.window.add_action(&help_overlay_action);
 
         let window = &self.window;
-        help_overlay_action.connect_activate(clone!(window => move |_, _| {
+        help_overlay_action.connect_activate(
+            clone!(window => move |_help_overlay_action, _maybe_variant| {
             //gtk_application_window_set_help_overlay ()
             //gtk_application_window_get_help_overlay ()
             let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
@@ -129,7 +197,8 @@ impl MainWindow {
             } else {
                 show_info_message_box(&window, "Help me!");
             }
-        }));
+        }),
+        );
 
         //app actions
         let preferences_action = gio::SimpleAction::new("preferences", None);
