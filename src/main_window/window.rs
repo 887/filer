@@ -9,9 +9,11 @@ use std::path::PathBuf;
 use gtk::*;
 use gtk::prelude::*;
 use glib::signal::SignalHandlerId;
+use glib::{VariantType};
+use glib::variant::FromVariant;
 
 use gio::prelude::*;
-use gio::{ApplicationFlags, Menu, MenuExt};
+use gio::{ApplicationFlags, Menu, MenuExt, MenuItemExt};
 
 use main_window::header::*;
 use main_window::content::*;
@@ -54,6 +56,7 @@ pub struct MainWindow {
     pub left_scrolled_window: gtk::ScrolledWindow,
     pub middle_scrolled_window: gtk::ScrolledWindow,
     pub right_scrolled_window: gtk::ScrolledWindow,
+    pub places_sidebar: gtk::PlacesSidebar,
 }
 
 impl MainWindow {
@@ -83,6 +86,9 @@ impl MainWindow {
             right_scrolled_window: builder
                 .get_object::<gtk::ScrolledWindow>("right_scrolled_window")
                 .unwrap(),
+            places_sidebar: builder
+                .get_object::<gtk::PlacesSidebar>("places_sidebar")
+                .unwrap(),
         };
 
         main_window.window.set_title("Filer");
@@ -102,6 +108,7 @@ impl MainWindow {
             .connect_clicked(clone!(header => move |button| {
             if !header.is_any_view_toogle_button_active() {
                 button.set_active(true);
+                println!("TODO: Show GtkIconView on center column");
             } else {
                 header.details_view_toggle_button.set_active(false);
             }
@@ -111,6 +118,7 @@ impl MainWindow {
             .connect_clicked(clone!(header => move |button| {
             if !header.is_any_view_toogle_button_active() {
                 button.set_active(true);
+                println!("TODO: Show GtkTreeView on center column");
             } else {
                 header.icons_view_toggle_button.set_active(false);
             }
@@ -159,6 +167,14 @@ impl MainWindow {
     fn create_menu(&mut self, app: &gtk::Application) {
         let menu_main = gio::Menu::new();
 
+        let menu_sidebar = gio::Menu::new();
+        // https://people.gnome.org/~gcampagna/docs/Gio-2.0/Gio.MenuModel.html
+
+        let sidebar_menu_item = gio::MenuItem::new("_Show Sidebar", "win.show-sidebar");
+        menu_sidebar.append_item(&sidebar_menu_item);
+        // sidebar_menu_item.set_action_and_target_value("win.show-sidebar", &true.to_variant());
+        menu_main.append_section(None, &menu_sidebar);
+
         let menu_preferences = gio::Menu::new();
         menu_preferences.append("Prefere_nces", "app.preferences");
         menu_main.append_section(None, &menu_preferences);
@@ -180,11 +196,30 @@ impl MainWindow {
     }
 
     fn map_actions(&mut self, app: &gtk::Application) {
+        let window = &self.window;
         //window actions
+        let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &true.to_variant());
+        self.window.add_action(&sidebar_action);
+
+        let places_sidebar = &self.places_sidebar;
+        sidebar_action.connect_activate(
+             clone!(places_sidebar => move |sidebar_action, _maybe_variant_value| {
+                let var_value = sidebar_action.get_state().unwrap();
+                let sidebar_visible = bool::from_variant(&var_value).unwrap();
+                if sidebar_visible {
+                    // println!("{}", "sidebar was active");
+                    places_sidebar.set_visible(false);
+                } else {
+                    // println!("{}", "sidebar was inactive");
+                    places_sidebar.set_visible(true);
+                }
+                sidebar_action.set_state(&(!sidebar_visible).to_variant());
+             }),
+         );
+
         let help_overlay_action = gio::SimpleAction::new("show-help-overlay", None);
         self.window.add_action(&help_overlay_action);
 
-        let window = &self.window;
         help_overlay_action.connect_activate(
             clone!(window => move |_help_overlay_action, _maybe_variant| {
             //gtk_application_window_set_help_overlay ()

@@ -120,6 +120,11 @@ fn create_menu(app: &gtk::Application) {
 
     let menu_main = gio::Menu::new();
 
+    menu_main.append("_Checkbox", "win.toggle-check-box");
+
+    menu_main.append("_Radio Option", "win.toggle-radio(true)");
+    menu_main.append("_Radio Option", "win.toggle-radio(false)");
+
     menu_main.append("_Keyboard Shortcuts", "win.show-help-overlay");
     menu_main.append("_About", "app.about");
     menu_main.append("_Quit", "app.quit");
@@ -143,6 +148,15 @@ fn map_actions(app: &gtk::Application, window: &gtk::ApplicationWindow) {
             show_info_message_box(&window, "Show Help Overlay here!");
         }
     }));
+
+    // adding none, true here lets the action act as a check box with the checked option on
+    let checkbox_action = gio::SimpleAction::new_stateful("toggle-check-box", None, &true.to_variant());
+    window.add_action(&checkbox_action);
+
+    //and this way its a radio button
+    let ty = glib::VariantTy::new("b").unwrap();
+    let radio_action = gio::SimpleAction::new_stateful("toggle-radio", ty, &true.to_variant());
+    window.add_action(&radio_action);
 
     //app actions
     let preferences_action = gio::SimpleAction::new("about", None);
