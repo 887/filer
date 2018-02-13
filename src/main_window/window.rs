@@ -17,7 +17,6 @@ use gio::{ApplicationFlags, Menu, MenuExt, MenuItemExt};
 
 use main_window::header::*;
 use main_window::content::*;
-use main_window::fileliststore::*;
 
 use glib::translate::*;
 
@@ -52,11 +51,6 @@ pub struct MainWindow {
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
-    pub left_tree_view: gtk::TreeView,
-    pub left_scrolled_window: gtk::ScrolledWindow,
-    pub middle_scrolled_window: gtk::ScrolledWindow,
-    pub right_scrolled_window: gtk::ScrolledWindow,
-    pub places_sidebar: gtk::PlacesSidebar,
 }
 
 impl MainWindow {
@@ -74,21 +68,6 @@ impl MainWindow {
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
-            left_tree_view: builder
-                .get_object::<gtk::TreeView>("left_tree_view")
-                .unwrap(),
-            left_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("left_scrolled_window")
-                .unwrap(),
-            middle_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("middle_scrolled_window")
-                .unwrap(),
-            right_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("right_scrolled_window")
-                .unwrap(),
-            places_sidebar: builder
-                .get_object::<gtk::PlacesSidebar>("places_sidebar")
-                .unwrap(),
         };
 
         main_window.window.set_title("Filer");
@@ -135,11 +114,6 @@ impl MainWindow {
         search_entry.connect_stop_search(clone!(header => move |_search_entry| {
             header.find_toggle_button.set_active(false);
         }));
-
-        let mut fileliststore = FileListStore::new();
-        fileliststore.fill_from_path(&PathBuf::from("/home/laragana"));
-        println!("file count: {}", fileliststore.count);
-        self.left_tree_view.set_model(&fileliststore.list_store);
     }
 
     pub fn startup(&mut self, app: &gtk::Application) {
@@ -158,6 +132,8 @@ impl MainWindow {
         //add window to appplication. This show the app menu when needed
         app.add_window(&self.window);
         self.window.show_all();
+
+        self.contents.activate();
     }
 
     pub fn shutdown(&self, _app: &gtk::Application) {
@@ -201,7 +177,7 @@ impl MainWindow {
         let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &true.to_variant());
         self.window.add_action(&sidebar_action);
 
-        let places_sidebar = &self.places_sidebar;
+        let places_sidebar = &self.contents.places_sidebar;
         sidebar_action.connect_activate(
              clone!(places_sidebar => move |sidebar_action, _maybe_variant_value| {
                 let var_value = sidebar_action.get_state().unwrap();
