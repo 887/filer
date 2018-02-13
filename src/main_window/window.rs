@@ -81,6 +81,20 @@ impl MainWindow {
             gtk::Inhibit(false)
         }));
 
+        // self.window
+        //     .on_state_event( move |_window, _event| {
+        //             app.quit();
+        //             gtk::inhibit(false)
+        //         }) ;
+
+        //TODO:https://wiki.gnome.org/HowDoI/SaveWindowState
+        self.window.connect_destroy(
+            clone!(app => move |_window| {
+                _window.store_state();
+
+            })
+        );
+
         let header = &self.header;
         header
             .icons_view_toggle_button
@@ -133,7 +147,7 @@ impl MainWindow {
         app.add_window(&self.window);
         self.window.show_all();
 
-        self.contents.activate();
+        self.contents.activate(&self);
     }
 
     pub fn shutdown(&self, _app: &gtk::Application) {

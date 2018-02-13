@@ -89,6 +89,9 @@
                                 <attribute name="text">0</attribute>
                               </attributes>
                             </child>
+                            <child>
+                              <object class="GtkCellRendererPixbuf"/>
+                            </child>
                           </object>
                         </child>
                         <child>

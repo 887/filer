@@ -16,6 +16,7 @@ use gtk::*;
 use gtk::prelude::*;
 
 use main_window::fileliststore::*;
+use main_window::window::MainWindow;
 
 // #[derive(Clone)]
 pub struct Content {
@@ -48,10 +49,12 @@ impl Content {
 
         content
     }
-    pub fn activate(&self) {
+    pub fn activate(&self, window: &MainWindow) {
         let mut fileliststore = FileListStore::new();
         fileliststore.fill_from_path(&PathBuf::from("/home/laragana"));
         println!("file count: {}", fileliststore.count);
         self.left_tree_view.set_model(&fileliststore.list_store);
+
+        // if window.header.... todo
     }
 }
