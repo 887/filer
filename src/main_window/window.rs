@@ -3,6 +3,8 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
+use std::sync::Arc;
+
 use std::fs;
 use std::path::PathBuf;
 
@@ -42,12 +44,14 @@ macro_rules! clone {
 //TODO: save window state
 //https://wiki.gnome.org/HowDoI/SaveWindowState
 
-const FILER_SETTINGS_WINDOW_PREFERENCES: &str = "a887.filer.preferences";
-const FILER_WINDOW_SIDEBAR_VISIBLE: &str = "sidebar-visible";
+const FILER_SETTINGS_PREFERENCES: &str = "a887.filer.preferences";
+const FILER_SETTINGS_WINDOW_STATE: &str = "a887.filer.window-state";
+const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
 
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
+    pub fullscreen: Arc<bool>,
     pub header: Header,
     pub contents: Content,
     pub path_entry: gtk::Entry,
@@ -55,7 +59,8 @@ pub struct MainWindow {
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
-    pub settings: gio::Settings,
+    pub settings_window_state: gio::Settings,
+    pub settings_preferences: gio::Settings,
 }
 
 impl MainWindow {
@@ -64,6 +69,7 @@ impl MainWindow {
             window: builder
                 .get_object::<ApplicationWindow>("main_application_window")
                 .unwrap(),
+            fullscreen: Arc::new(false),
             header: Header::new(builder),
             contents: Content::new(builder),
             path_entry: builder.get_object::<gtk::Entry>("path_entry").unwrap(),
@@ -73,7 +79,8 @@ impl MainWindow {
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
-            settings: gio::Settings::new(FILER_SETTINGS_WINDOW_PREFERENCES)
+            settings_preferences: gio::Settings::new(FILER_SETTINGS_PREFERENCES),
+            settings_window_state: gio::Settings::new(FILER_SETTINGS_WINDOW_STATE),
         };
 
         main_window.window.set_title("Filer");
@@ -87,18 +94,36 @@ impl MainWindow {
             gtk::Inhibit(false)
         }));
 
+        //https://wiki.gnome.org/HowDoI/SaveWindowState
         self.window
-            .connect_window_state_event( move |_window, _event| {
+            .connect_size_allocate( move |_window, _event| {
+                // save the window geometry only if we are not maximized of fullscreen
+                // if !(self.window.is_maximized() || self.window.fullscreen()) {
+                // You can track the fullscreen state via the “window-state-event”
+                // signal on GtkWidget.
+                if !(_window.is_maximized()) {
+
+                }
+            }) ;
+
+        let fullscreen = self.fullscreen.clone();
+        self.window
+            .connect_window_state_event(move |_window, event| {
+                let mut fullscreen = fullscreen.clone();
+                let fullscreen = Arc::<bool>::make_mut(&mut fullscreen);
+
+                let window_state = event.get_new_window_state();
+                if window_state == gdk::WindowState::FULLSCREEN {
+                    *fullscreen = false;
+                } else {
+                    *fullscreen = true;
+                }
                 gtk::Inhibit(false)
             }) ;
 
-        //TODO:https://wiki.gnome.org/HowDoI/SaveWindowState
-        // self.window.connect_destroy(
-        //     clone!(app => move |_window| {
-        //         // _window.store_state();
-        //
-        //     })
-        // );
+        self.window.connect_destroy(move |_window| {
+                // _window.store_state();
+        });
 
         let header = &self.header;
         header
@@ -197,7 +222,7 @@ impl MainWindow {
         let window = &self.window;
 
         //window actions
-        let sidebar_visible = self.settings.get_boolean(FILER_WINDOW_SIDEBAR_VISIBLE);
+        let sidebar_visible = self.settings_window_state.get_boolean(FILER_WINDOW_START_WITH_SIDEBAR);
         let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &sidebar_visible.to_variant());
 
         // alternative: magic?

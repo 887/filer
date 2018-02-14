@@ -5,11 +5,33 @@
   </schema>
 
   <schema path="/a887/filer/preferences/" id="a887.filer.preferences" gettext-domain="filer">
-    <key type="b" name="sidebar-visible">
+    <key type="b" name="something">
       <default>true</default>
-      <summary>Whether to show the places sidebar</summary>
-      <description>If set to true, then Filer will show the Places sidebar.</description>
+      <summary>Something</summary>
+      <description>Something</description>
     </key>
   </schema>
 
+  <schema path="/a887/filer/window-state/" id="a887.filer.window-state" gettext-domain="filer">
+      <key type="(ii)" name="initial-size">
+          <default>(900, 550)</default>
+          <summary>Initial size of the window</summary>
+          <description>A tuple containing the initial width and height of the application window.</description>
+      </key>
+      <key type="b" name="maximized">
+          <default>false</default>
+          <summary>Whether the navigation window should be maximized</summary>
+          <description>Whether the navigation window should be maximized by default.</description>
+      </key>
+      <key type="i" name="sidebar-width">
+          <default>188</default>
+          <summary>Width of the side pane</summary>
+          <description>The default width of the side pane in new windows.</description>
+      </key>
+      <key type="b" name="start-with-sidebar">
+          <default>true</default>
+          <summary>Show side pane in new windows</summary>
+          <description>If set to true, newly opened windows will have the side pane visible.</description>
+      </key>
+  </schema>
 </schemalist>
