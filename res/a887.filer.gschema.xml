@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/a887/filer/" id="a887.filer" gettext-domain="filer">
+    <child schema="a887.filer.preferences" name="preferences"/>
+  </schema>
+
+  <schema path="/a887/filer/preferences/" id="a887.filer.preferences" gettext-domain="filer">
+    <key type="b" name="sidebar-visible">
+      <default>true</default>
+      <summary>Whether to show the places sidebar</summary>
+      <description>If set to true, then Filer will show the Places sidebar.</description>
+    </key>
+  </schema>
+
+</schemalist>

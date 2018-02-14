@@ -49,7 +49,7 @@ impl Content {
 
         content
     }
-    pub fn activate(&self, window: &MainWindow) {
+    pub fn activate(&self, _window: &MainWindow) {
         let mut fileliststore = FileListStore::new();
         fileliststore.fill_from_path(&PathBuf::from("/home/laragana"));
         println!("file count: {}", fileliststore.count);

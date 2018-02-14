@@ -8,12 +8,13 @@ use std::path::PathBuf;
 
 use gtk::*;
 use gtk::prelude::*;
+
 use glib::signal::SignalHandlerId;
 use glib::{VariantType};
 use glib::variant::FromVariant;
 
 use gio::prelude::*;
-use gio::{ApplicationFlags, Menu, MenuExt, MenuItemExt};
+use gio::{MenuExt, MenuItemExt, SettingsExt};
 
 use main_window::header::*;
 use main_window::content::*;
@@ -41,6 +42,9 @@ macro_rules! clone {
 //TODO: save window state
 //https://wiki.gnome.org/HowDoI/SaveWindowState
 
+const FILER_SETTINGS_WINDOW_PREFERENCES: &str = "a887.filer.preferences";
+const FILER_WINDOW_SIDEBAR_VISIBLE: &str = "sidebar-visible";
+
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
@@ -51,6 +55,7 @@ pub struct MainWindow {
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
+    pub settings: gio::Settings,
 }
 
 impl MainWindow {
@@ -68,6 +73,7 @@ impl MainWindow {
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             main_menu: None,
+            settings: gio::Settings::new(FILER_SETTINGS_WINDOW_PREFERENCES)
         };
 
         main_window.window.set_title("Filer");
@@ -81,19 +87,18 @@ impl MainWindow {
             gtk::Inhibit(false)
         }));
 
-        // self.window
-        //     .on_state_event( move |_window, _event| {
-        //             app.quit();
-        //             gtk::inhibit(false)
-        //         }) ;
+        self.window
+            .connect_window_state_event( move |_window, _event| {
+                gtk::Inhibit(false)
+            }) ;
 
         //TODO:https://wiki.gnome.org/HowDoI/SaveWindowState
-        self.window.connect_destroy(
-            clone!(app => move |_window| {
-                _window.store_state();
-
-            })
-        );
+        // self.window.connect_destroy(
+        //     clone!(app => move |_window| {
+        //         // _window.store_state();
+        //
+        //     })
+        // );
 
         let header = &self.header;
         header
@@ -133,6 +138,7 @@ impl MainWindow {
     pub fn startup(&mut self, app: &gtk::Application) {
         let maybe_menu = app.get_app_menu();
         if let Some(menu) = maybe_menu {
+            println!("Menu loaded from resources");
             self.main_menu = Some(gtk::Menu::new_from_model(&menu));
         } else {
             //fallback while application xml resource loading is broken
@@ -145,6 +151,8 @@ impl MainWindow {
     pub fn activate(&self, app: &gtk::Application) {
         //add window to appplication. This show the app menu when needed
         app.add_window(&self.window);
+
+        //show window first, then build contents
         self.window.show_all();
 
         self.contents.activate(&self);
@@ -187,8 +195,14 @@ impl MainWindow {
 
     fn map_actions(&mut self, app: &gtk::Application) {
         let window = &self.window;
+
         //window actions
-        let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &true.to_variant());
+        let sidebar_visible = self.settings.get_boolean(FILER_WINDOW_SIDEBAR_VISIBLE);
+        let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &sidebar_visible.to_variant());
+
+        // alternative: magic?
+        // self.settings.bind_writable(FILER_WINDOW_SIDEBAR_VISIBLE, &sidebar_action, "state", false);
+
         self.window.add_action(&sidebar_action);
 
         let places_sidebar = &self.contents.places_sidebar;

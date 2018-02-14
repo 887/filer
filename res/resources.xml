@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/a887/filer/">
+        <file preprocess="xml-stripblanks">gtk/menus.ui</file>
+        <file preprocess="xml-stripblanks">main_window.glade</file>
+    </gresource>
+</gresources>
+
