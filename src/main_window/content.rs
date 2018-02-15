@@ -20,6 +20,7 @@ use main_window::window::MainWindow;
 
 // #[derive(Clone)]
 pub struct Content {
+    pub content_box: gtk::Box,
     pub left_tree_view: gtk::TreeView,
     pub left_scrolled_window: gtk::ScrolledWindow,
     pub middle_scrolled_window: gtk::ScrolledWindow,
@@ -30,6 +31,7 @@ pub struct Content {
 impl Content {
     pub fn new(builder: &Builder) -> Content {
         let content = Content {
+            content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             left_tree_view: builder
                 .get_object::<gtk::TreeView>("left_tree_view")
                 .unwrap(),
