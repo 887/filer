@@ -3,7 +3,8 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
-use std::sync::Arc;
+use std::cell::Cell;
+use std::rc::Rc;
 
 use std::fs;
 use std::path::PathBuf;
@@ -48,7 +49,7 @@ const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
-    pub fullscreen: Arc<bool>,
+    pub fullscreen: Rc<Cell<bool>>,
     pub header: Header,
     pub contents: Content,
     pub search_entry: gtk::SearchEntry,
@@ -64,7 +65,7 @@ impl MainWindow {
             window: builder
                 .get_object::<ApplicationWindow>("main_application_window")
                 .unwrap(),
-            fullscreen: Arc::new(false),
+            fullscreen: Rc::new(Cell::new(false)),
             header: Header::new(builder),
             contents: Content::new(builder),
             search_entry: builder
@@ -90,13 +91,14 @@ impl MainWindow {
         //https://wiki.gnome.org/HowDoI/SaveWindowState
         //TODO: save window
 
+        let fullscreen = self.fullscreen.clone();
         self.window
             .connect_size_allocate( move |_window, _event| {
                 // save the window geometry only if we are not maximized of fullscreen
                 // if !(self.window.is_maximized() || self.window.fullscreen()) {
                 // You can track the fullscreen state via the “window-state-event”
                 // signal on GtkWidget.
-                if !(_window.is_maximized()) {
+                if !(_window.is_maximized() || fullscreen.get() == true) {
 
                 }
             }) ;
@@ -104,21 +106,19 @@ impl MainWindow {
         let fullscreen = self.fullscreen.clone();
         self.window
             .connect_window_state_event(move |_window, event| {
-                let mut fullscreen = fullscreen.clone();
-                let fullscreen = Arc::<bool>::make_mut(&mut fullscreen);
+                let fullscreen = fullscreen.clone();
 
                 let window_state = event.get_new_window_state();
-                if window_state == gdk::WindowState::FULLSCREEN {
-                    *fullscreen = false;
-                } else {
-                    *fullscreen = true;
-                }
+                fullscreen.set(window_state == gdk::WindowState::FULLSCREEN);
+                println!("fullscreen: {}", window_state == gdk::WindowState::FULLSCREEN);
                 gtk::Inhibit(false)
             }) ;
 
         self.window.connect_destroy(move |_window| {
                 // _window.store_state();
         });
+
+        header.init(&self, app: &gtk::Application);
 
         let header = &self.header;
         header
