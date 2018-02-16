@@ -15,7 +15,7 @@ use gtk::prelude::*;
 use self::gdk::WindowExt;
 
 use glib::signal::SignalHandlerId;
-use glib::{VariantType};
+use glib::VariantType;
 use glib::variant::FromVariant;
 
 use gio::prelude::*;
@@ -33,8 +33,6 @@ const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
-    pub fullscreen: Rc<Cell<bool>>, //todo use for somethin usefull or make example with
-                                    //left-right button
     pub header: Header,
     pub contents: Content,
     pub main_menu: Option<gtk::Menu>,
@@ -48,7 +46,6 @@ impl MainWindow {
             window: builder
                 .get_object::<ApplicationWindow>("main_application_window")
                 .unwrap(),
-            fullscreen: Rc::new(Cell::new(false)),
             header: Header::new(builder),
             contents: Content::new(builder),
             main_menu: None,
@@ -109,7 +106,6 @@ impl MainWindow {
     }
 
     fn map_app_actions(&mut self, app: &gtk::Application) {
-
         //app actions
         let preferences_action = gio::SimpleAction::new("preferences", None);
         app.add_action(&preferences_action);
@@ -145,47 +141,32 @@ impl MainWindow {
 
         //https://wiki.gnome.org/HowDoI/SaveWindowState
         //TODO: save window
-        let fullscreen = self.fullscreen.clone();
-        self.window
-            .connect_size_allocate(move |window, _event| {
-                // save the window geometry only if we are not maximized of fullscreen
-                // if !(self.window.is_maximized() || self.window.fullscreen()) {
-                // You can track the fullscreen state via the “window-state-event”
-                // signal on GtkWidget.
+        self.window.connect_size_allocate(move |window, _event| {
+            // save the window geometry only if we are not maximized of fullscreen
+            // if !(self.window.is_maximized() || self.window.fullscreen()) {
 
-                //
-                // TODO TRY THIS INSTEAD OF CELLLL
-                // TODO: USE RC CELL TO SEE IF IT WORKS THAT WAY FOR LATER111 !!!
-                let window_state = window.get_window().unwrap().get_state();
+            if let Some(gdk_window) = window.get_window() {
+                let window_state = gdk_window.get_state();
+                if !(window.is_maximized() || window_state == gdk::WindowState::FULLSCREEN) {}
+            }
+        });
 
-                if !(window.is_maximized() || window_state == gdk::WindowState::FULLSCREEN) {
-
-                }
-            }) ;
-
-            let fullscreen = self.fullscreen.clone();
-            self.window
-                .connect_window_state_event(move |_window, event| {
-                    let fullscreen = fullscreen.clone();
-
-                    let window_state = event.get_new_window_state();
-                    fullscreen.set(window_state == gdk::WindowState::FULLSCREEN);
-                    println!("fullscreen: {}", window_state == gdk::WindowState::FULLSCREEN);
-                    gtk::Inhibit(false)
-                }) ;
-
-            self.window.connect_destroy(move |_window| {
-                // _window.store_state();
-            });
-
+        self.window.connect_destroy(move |_window| {
+            // _window.store_state();
+        });
     }
 
     fn map_window_actions(&mut self) {
         let window = &self.window;
 
         //window actions
-        let settings_sidebar_visible = self.settings_window_state.get_boolean(FILER_WINDOW_START_WITH_SIDEBAR);
-        let sidebar_action = gio::SimpleAction::new_stateful("show-sidebar", None, &settings_sidebar_visible.to_variant());
+        let settings_sidebar_visible = self.settings_window_state
+            .get_boolean(FILER_WINDOW_START_WITH_SIDEBAR);
+        let sidebar_action = gio::SimpleAction::new_stateful(
+            "show-sidebar",
+            None,
+            &settings_sidebar_visible.to_variant(),
+        );
         window.add_action(&sidebar_action);
 
         // gtk magic that should auto update the acion on change value. Doesn't seem to work though
@@ -202,7 +183,7 @@ impl MainWindow {
                 settings_window_state.set_boolean(FILER_WINDOW_START_WITH_SIDEBAR, sidebar_visible);
                 sidebar_action.set_state(&sidebar_visible.to_variant());
             }),
-            );
+        );
 
         let help_overlay_action = gio::SimpleAction::new("show-help-overlay", None);
         window.add_action(&help_overlay_action);
@@ -229,8 +210,11 @@ impl MainWindow {
         self.window.show_all();
 
         //apply settings
-        let settings_sidebar_visible = self.settings_window_state.get_boolean(FILER_WINDOW_START_WITH_SIDEBAR);
-        if !settings_sidebar_visible { self.contents.places_sidebar.set_visible(false); }
+        let settings_sidebar_visible = self.settings_window_state
+            .get_boolean(FILER_WINDOW_START_WITH_SIDEBAR);
+        if !settings_sidebar_visible {
+            self.contents.places_sidebar.set_visible(false);
+        }
 
         //acivate window contents and load them
         self.contents.activate(&self);
@@ -239,7 +223,6 @@ impl MainWindow {
     pub fn shutdown(&self, _app: &gtk::Application) {
         // println!("");
     }
-
 }
 
 fn show_info_message_box(window: Option<&gtk::ApplicationWindow>, message: &str) {

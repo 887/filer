@@ -1,5 +1,8 @@
 extern crate gtk;
 
+use std::cell::Cell;
+use std::rc::Rc;
+
 use gtk::*;
 use gtk::prelude::*;
 
@@ -15,6 +18,7 @@ pub struct Header {
     pub find_toggle_button: ToggleButton,
     pub details_view_toggle_button: ToggleButton,
     pub icons_view_toggle_button: ToggleButton,
+    pub test_option: Rc<Cell<bool>>,
 }
 
 impl Header {
@@ -34,14 +38,14 @@ impl Header {
             icons_view_toggle_button: builder
                 .get_object::<ToggleButton>("icons_view_toggle_button")
                 .unwrap(),
+            test_option: Rc::new(Cell::new(false)),
         };
 
         header
     }
 
     pub fn is_any_view_toogle_button_active(&self) -> bool {
-        self.details_view_toggle_button.get_active() ||
-        self.icons_view_toggle_button.get_active()
+        self.details_view_toggle_button.get_active() || self.icons_view_toggle_button.get_active()
     }
 }
 
@@ -58,7 +62,7 @@ impl Header {
                 }
             }));
 
-         self.details_view_toggle_button
+        self.details_view_toggle_button
             .connect_clicked(clone!(header => move |button| {
                 if !header.is_any_view_toogle_button_active() {
                     button.set_active(true);
@@ -68,15 +72,24 @@ impl Header {
                 }
             }));
 
-        let search_bar = &main_window.contents.search_bar;
-        self
-            .find_toggle_button
-            .connect_clicked(clone!(search_bar => move |button| {
+        let search_bar = main_window.contents.search_bar.clone();
+        self.find_toggle_button
+            .connect_clicked(move |button| {
                 search_bar.set_search_mode(button.get_active());
-            }));
+            });
 
-        // back_button: builder.get_object::<Button>("back_button").unwrap(),
-        // forward_button: builder.get_object::<Button>("forward_button").unwrap(),
+        let test_option = self.test_option.clone();
+        self.back_button
+            .connect_clicked(move |button| {
+                let old_value = test_option.get();
+                test_option.set(!old_value);
+            });
 
+        let test_option = self.test_option.clone();
+        self.forward_button
+            .connect_clicked(move |button| {
+                let value = test_option.get();
+                println!("value of test_option was: {}", value);
+            });
     }
 }
