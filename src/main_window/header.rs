@@ -68,16 +68,15 @@ impl Header {
                 }
             }));
 
-        let search_bar = &main_window.search_bar;
-        header
+        let search_bar = &main_window.contents.search_bar;
+        self
             .find_toggle_button
             .connect_clicked(clone!(search_bar => move |button| {
                 search_bar.set_search_mode(button.get_active());
             }));
 
-        let search_entry = &main_window.search_entry;
-        search_entry.connect_stop_search(clone!(header => move |_search_entry| {
-            header.find_toggle_button.set_active(false);
-        }));
+        // back_button: builder.get_object::<Button>("back_button").unwrap(),
+        // forward_button: builder.get_object::<Button>("forward_button").unwrap(),
+
     }
 }

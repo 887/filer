@@ -33,11 +33,10 @@ const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
 // #[derive(Clone)]
 pub struct MainWindow {
     pub window: gtk::ApplicationWindow,
-    pub fullscreen: Rc<Cell<bool>>,
+    pub fullscreen: Rc<Cell<bool>>, //todo use for somethin usefull or make example with
+                                    //left-right button
     pub header: Header,
     pub contents: Content,
-    pub search_entry: gtk::SearchEntry,
-    pub search_bar: gtk::SearchBar,
     pub main_menu: Option<gtk::Menu>,
     pub settings_window_state: gio::Settings,
     pub settings_preferences: gio::Settings,
@@ -52,10 +51,6 @@ impl MainWindow {
             fullscreen: Rc::new(Cell::new(false)),
             header: Header::new(builder),
             contents: Content::new(builder),
-            search_entry: builder
-                .get_object::<gtk::SearchEntry>("search_entry")
-                .unwrap(),
-            search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             main_menu: None,
             settings_preferences: gio::Settings::new(FILER_SETTINGS_PREFERENCES),
             settings_window_state: gio::Settings::new(FILER_SETTINGS_WINDOW_STATE),
@@ -79,6 +74,7 @@ impl MainWindow {
         self.map_window_actions();
         self.map_window_events(app);
         self.header.startup(&self, app);
+        self.contents.startup(&self, app);
     }
 
     fn create_menu(&mut self, app: &gtk::Application) {
@@ -241,7 +237,7 @@ impl MainWindow {
     }
 
     pub fn shutdown(&self, _app: &gtk::Application) {
-        println!("");
+        // println!("");
     }
 
 }
