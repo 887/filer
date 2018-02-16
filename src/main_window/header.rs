@@ -1,5 +1,9 @@
+extern crate gtk;
+
 use gtk::*;
 use gtk::prelude::*;
+
+use main_window::window::MainWindow;
 
 #[derive(Clone)]
 pub struct Header {
@@ -38,5 +42,42 @@ impl Header {
     pub fn is_any_view_toogle_button_active(&self) -> bool {
         self.details_view_toggle_button.get_active() ||
         self.icons_view_toggle_button.get_active()
+    }
+}
+
+impl Header {
+    pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {
+        let header = self;
+        self.icons_view_toggle_button
+            .connect_clicked(clone!(header => move |button| {
+                if !header.is_any_view_toogle_button_active() {
+                    button.set_active(true);
+                    println!("TODO: Show GtkIconView on center column");
+                } else {
+                    header.details_view_toggle_button.set_active(false);
+                }
+            }));
+
+         self.details_view_toggle_button
+            .connect_clicked(clone!(header => move |button| {
+                if !header.is_any_view_toogle_button_active() {
+                    button.set_active(true);
+                    println!("TODO: Show GtkTreeView on center column");
+                } else {
+                    header.icons_view_toggle_button.set_active(false);
+                }
+            }));
+
+        let search_bar = &main_window.search_bar;
+        header
+            .find_toggle_button
+            .connect_clicked(clone!(search_bar => move |button| {
+                search_bar.set_search_mode(button.get_active());
+            }));
+
+        let search_entry = &main_window.search_entry;
+        search_entry.connect_stop_search(clone!(header => move |_search_entry| {
+            header.find_toggle_button.set_active(false);
+        }));
     }
 }

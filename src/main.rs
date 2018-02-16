@@ -24,8 +24,6 @@ use main_window::window::MainWindow;
 const APP_ID: &str = "a887.filer";
 
 #[cfg(feature = "experiments")]
-mod experiments;
-
 // cargo run --features "experiments"
 #[cfg(feature = "experiments")]
 fn main() {
@@ -69,7 +67,6 @@ fn main() {
         use std::env;
 
         let mut main_window = MainWindow::new(&main_builder);
-        main_window.init(&app);
         main_window.startup(app);
 
         let window_ref = Rc::new(RefCell::new(main_window));

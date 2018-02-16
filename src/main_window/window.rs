@@ -12,6 +12,8 @@ use std::path::PathBuf;
 use gtk::*;
 use gtk::prelude::*;
 
+use self::gdk::WindowExt;
+
 use glib::signal::SignalHandlerId;
 use glib::{VariantType};
 use glib::variant::FromVariant;
@@ -23,24 +25,6 @@ use main_window::header::*;
 use main_window::content::*;
 
 use glib::translate::*;
-
-// make moving clones into closures more convenient
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-                move || $body
-        }
-        );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-                move |$(clone!(@param $p),)+| $body
-        }
-        );
-}
 
 const FILER_SETTINGS_PREFERENCES: &str = "a887.filer.preferences";
 const FILER_SETTINGS_WINDOW_STATE: &str = "a887.filer.window-state";
@@ -81,80 +65,6 @@ impl MainWindow {
         main_window
     }
 
-    pub fn init(&self, app: &gtk::Application) {
-        self.window
-            .connect_delete_event(clone!(app => move |_window, _event| {
-            app.quit();
-            gtk::Inhibit(false)
-        }));
-
-        //https://wiki.gnome.org/HowDoI/SaveWindowState
-        //TODO: save window
-
-        let fullscreen = self.fullscreen.clone();
-        self.window
-            .connect_size_allocate( move |_window, _event| {
-                // save the window geometry only if we are not maximized of fullscreen
-                // if !(self.window.is_maximized() || self.window.fullscreen()) {
-                // You can track the fullscreen state via the “window-state-event”
-                // signal on GtkWidget.
-                if !(_window.is_maximized() || fullscreen.get() == true) {
-
-                }
-            }) ;
-
-        let fullscreen = self.fullscreen.clone();
-        self.window
-            .connect_window_state_event(move |_window, event| {
-                let fullscreen = fullscreen.clone();
-
-                let window_state = event.get_new_window_state();
-                fullscreen.set(window_state == gdk::WindowState::FULLSCREEN);
-                println!("fullscreen: {}", window_state == gdk::WindowState::FULLSCREEN);
-                gtk::Inhibit(false)
-            }) ;
-
-        self.window.connect_destroy(move |_window| {
-                // _window.store_state();
-        });
-
-        header.init(&self, app: &gtk::Application);
-
-        let header = &self.header;
-        header
-            .icons_view_toggle_button
-            .connect_clicked(clone!(header => move |button| {
-            if !header.is_any_view_toogle_button_active() {
-                button.set_active(true);
-                println!("TODO: Show GtkIconView on center column");
-            } else {
-                header.details_view_toggle_button.set_active(false);
-            }
-        }));
-        header
-            .details_view_toggle_button
-            .connect_clicked(clone!(header => move |button| {
-            if !header.is_any_view_toogle_button_active() {
-                button.set_active(true);
-                println!("TODO: Show GtkTreeView on center column");
-            } else {
-                header.icons_view_toggle_button.set_active(false);
-            }
-        }));
-
-        let search_bar = &self.search_bar;
-        header
-            .find_toggle_button
-            .connect_clicked(clone!(search_bar => move |button| {
-            search_bar.set_search_mode(button.get_active());
-        }));
-
-        let search_entry = &self.search_entry;
-        search_entry.connect_stop_search(clone!(header => move |_search_entry| {
-            header.find_toggle_button.set_active(false);
-        }));
-    }
-
     pub fn startup(&mut self, app: &gtk::Application) {
         let maybe_menu = app.get_app_menu();
         if let Some(menu) = maybe_menu {
@@ -167,6 +77,8 @@ impl MainWindow {
 
         self.map_app_actions(&app);
         self.map_window_actions();
+        self.map_window_events(app);
+        self.header.startup(&self, app);
     }
 
     fn create_menu(&mut self, app: &gtk::Application) {
@@ -226,6 +138,50 @@ impl MainWindow {
         quit_action.connect_activate(clone!(window => move |_, _| {
             window.close();
         }));
+    }
+
+    pub fn map_window_events(&self, app: &gtk::Application) {
+        self.window
+            .connect_delete_event(clone!(app => move |_window, _event| {
+                app.quit();
+                gtk::Inhibit(false)
+            }));
+
+        //https://wiki.gnome.org/HowDoI/SaveWindowState
+        //TODO: save window
+        let fullscreen = self.fullscreen.clone();
+        self.window
+            .connect_size_allocate(move |window, _event| {
+                // save the window geometry only if we are not maximized of fullscreen
+                // if !(self.window.is_maximized() || self.window.fullscreen()) {
+                // You can track the fullscreen state via the “window-state-event”
+                // signal on GtkWidget.
+
+                //
+                // TODO TRY THIS INSTEAD OF CELLLL
+                // TODO: USE RC CELL TO SEE IF IT WORKS THAT WAY FOR LATER111 !!!
+                let window_state = window.get_window().unwrap().get_state();
+
+                if !(window.is_maximized() || window_state == gdk::WindowState::FULLSCREEN) {
+
+                }
+            }) ;
+
+            let fullscreen = self.fullscreen.clone();
+            self.window
+                .connect_window_state_event(move |_window, event| {
+                    let fullscreen = fullscreen.clone();
+
+                    let window_state = event.get_new_window_state();
+                    fullscreen.set(window_state == gdk::WindowState::FULLSCREEN);
+                    println!("fullscreen: {}", window_state == gdk::WindowState::FULLSCREEN);
+                    gtk::Inhibit(false)
+                }) ;
+
+            self.window.connect_destroy(move |_window| {
+                // _window.store_state();
+            });
+
     }
 
     fn map_window_actions(&mut self) {
