@@ -51,45 +51,43 @@ impl Header {
 
 impl Header {
     pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {
-        let header = self;
+        let header = self.clone();
         self.icons_view_toggle_button
-            .connect_clicked(clone!(header => move |button| {
+            .connect_clicked(move |button| {
                 if !header.is_any_view_toogle_button_active() {
                     button.set_active(true);
                     println!("TODO: Show GtkIconView on center column");
                 } else {
                     header.details_view_toggle_button.set_active(false);
                 }
-            }));
+            });
 
+        let header = self.clone();
         self.details_view_toggle_button
-            .connect_clicked(clone!(header => move |button| {
+            .connect_clicked(move |button| {
                 if !header.is_any_view_toogle_button_active() {
                     button.set_active(true);
                     println!("TODO: Show GtkTreeView on center column");
                 } else {
                     header.icons_view_toggle_button.set_active(false);
                 }
-            }));
+            });
 
         let search_bar = main_window.contents.search_bar.clone();
-        self.find_toggle_button
-            .connect_clicked(move |button| {
-                search_bar.set_search_mode(button.get_active());
-            });
+        self.find_toggle_button.connect_clicked(move |button| {
+            search_bar.set_search_mode(button.get_active());
+        });
 
         let test_option = self.test_option.clone();
-        self.back_button
-            .connect_clicked(move |button| {
-                let old_value = test_option.get();
-                test_option.set(!old_value);
-            });
+        self.back_button.connect_clicked(move |_button| {
+            let old_value = test_option.get();
+            test_option.set(!old_value);
+        });
 
         let test_option = self.test_option.clone();
-        self.forward_button
-            .connect_clicked(move |button| {
-                let value = test_option.get();
-                println!("value of test_option was: {}", value);
-            });
+        self.forward_button.connect_clicked(move |_button| {
+            let value = test_option.get();
+            println!("value of test_option was: {}", value);
+        });
     }
 }

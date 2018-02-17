@@ -17,7 +17,7 @@ use std::cell::RefCell;
 use gtk::*;
 use gio::prelude::*;
 use gio::ApplicationFlags;
-use gio::{Resource};
+use gio::Resource;
 
 use main_window::window::MainWindow;
 
@@ -42,7 +42,7 @@ fn main() {
 
     //TODO: use meson to build and install everything in the appropriate paths.
     //example for that: https://gitlab.gnome.org/danigm/fractal/blob/master/
-    //temporary development workaound for debug builds, do not include in release build
+    //temporary development workaround for debug builds, do not include in release build
     {
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/res/resources.gresource");

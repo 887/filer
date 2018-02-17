@@ -16,7 +16,7 @@ impl FileListStore {
     pub fn new() -> FileListStore {
         FileListStore {
             list_store: ListStore::new(&[Type::String, Type::String, Type::String]),
-            count: 0
+            count: 0,
         }
     }
 

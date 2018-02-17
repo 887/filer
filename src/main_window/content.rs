@@ -52,8 +52,7 @@ impl Content {
             search_entry: builder
                 .get_object::<gtk::SearchEntry>("search_entry")
                 .unwrap(),
-                search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
-
+            search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
         };
 
         content
@@ -61,7 +60,8 @@ impl Content {
 
     pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {
         let header = &main_window.header;
-        self.search_entry.connect_stop_search(clone!(header => move |_search_entry| {
+        self.search_entry
+            .connect_stop_search(clone!(header => move |_search_entry| {
             header.find_toggle_button.set_active(false);
         }));
     }

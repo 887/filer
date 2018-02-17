@@ -126,10 +126,10 @@ impl MainWindow {
         let quit_action = gio::SimpleAction::new("quit", None);
         app.add_action(&quit_action);
 
-        let window = &self.window;
-        quit_action.connect_activate(clone!(window => move |_, _| {
+        let window = self.window.clone();
+        quit_action.connect_activate(move |_, _| {
             window.close();
-        }));
+        });
     }
 
     pub fn map_window_events(&self, app: &gtk::Application) {
@@ -176,7 +176,7 @@ impl MainWindow {
 
         let settings_window_state = &self.settings_window_state;
         sidebar_action.connect_activate(
-            clone!(places_sidebar, settings_window_state => move |sidebar_action, _maybe_variant_value| {
+            clone!(places_sidebar, settings_window_state => move |sidebar_action, _maybe_value| {
                 let var_value = sidebar_action.get_state().unwrap();
                 let sidebar_visible = !(bool::from_variant(&var_value).unwrap());
                 places_sidebar.set_visible(sidebar_visible);
@@ -189,7 +189,7 @@ impl MainWindow {
         window.add_action(&help_overlay_action);
 
         help_overlay_action.connect_activate(
-            clone!(window => move |_help_overlay_action, _maybe_variant| {
+            clone!(window => move |_help_overlay_action, _maybe_value| {
                 //gtk_application_window_set_help_overlay ()
                 //gtk_application_window_get_help_overlay ()
                 let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
@@ -203,7 +203,7 @@ impl MainWindow {
     }
 
     pub fn activate(&self, app: &gtk::Application) {
-        //add window to appplication. This show the app menu when needed
+        //add window to application. This show the app menu when needed
         app.add_window(&self.window);
 
         //show window first, then apply settings, otherwise it won't work
