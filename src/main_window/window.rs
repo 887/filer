@@ -32,6 +32,7 @@ const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
 const FILER_WINDOW_INITIAL_WIDTH: &str = "initial-width";
 const FILER_WINDOW_INITIAL_HEIGHT: &str = "initial-height";
 const FILER_WINDOW_MAXIMIZED: &str = "maximized";
+const FILER_WINDOW_SIDEBAR_WIDTH: &str = "sidebar-width";
 
 // #[derive(Clone)]
 pub struct MainWindow {
@@ -142,10 +143,11 @@ impl MainWindow {
                 gtk::Inhibit(false)
             }));
 
-        //https://wiki.gnome.org/HowDoI/SaveWindowState
+        // https://wiki.gnome.org/HowDoI/SaveWindowState
         let settings_window_state = self.settings_window_state.clone();
+        let paned = self.contents.paned.clone();
         self.window.connect_size_allocate(move |window, _event| {
-            // save the window geometry only if we are not maximized of fullscreen
+            // save the window geometry only if we are not maximized or fullscreen
             if let Some(gdk_window) = window.get_window() {
                 let window_state = gdk_window.get_state();
                 if !(window_state == gdk::WindowState::FULLSCREEN) {
@@ -157,6 +159,8 @@ impl MainWindow {
                     }
                     settings_window_state.set_boolean(FILER_WINDOW_MAXIMIZED, maximized);
                 }
+                let sidebar_width = paned.get_position();
+                settings_window_state.set_int(FILER_WINDOW_SIDEBAR_WIDTH, sidebar_width);
             }
         });
 
@@ -219,17 +223,21 @@ impl MainWindow {
         //add window to application. This show the app menu when needed
         app.add_window(&self.window);
 
-        let initial_width = self.settings_window_state.
-            get_int(FILER_WINDOW_INITIAL_WIDTH);
-        let initial_height = self.settings_window_state.
-            get_int(FILER_WINDOW_INITIAL_HEIGHT);
-        let maximized = self.settings_window_state.
-            get_boolean(FILER_WINDOW_MAXIMIZED);
+        let initial_width = self.settings_window_state
+            .get_int(FILER_WINDOW_INITIAL_WIDTH);
+        let initial_height = self.settings_window_state
+            .get_int(FILER_WINDOW_INITIAL_HEIGHT);
+        let maximized = self.settings_window_state
+            .get_boolean(FILER_WINDOW_MAXIMIZED);
+        let sidebar_width = self.settings_window_state
+            .get_int(FILER_WINDOW_SIDEBAR_WIDTH);
 
         self.window.set_default_size(initial_width, initial_height);
         if maximized {
             self.window.maximize();
         }
+
+        self.contents.paned.set_position(sidebar_width);
 
         //show window first, then apply visible settings, otherwise it won't work
         self.window.show_all();

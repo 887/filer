@@ -40,9 +40,9 @@ fn main() {
         return;
     }
 
-    //TODO: use meson to build and install everything in the appropriate paths.
-    //example for that: https://gitlab.gnome.org/danigm/fractal/blob/master/
-    //temporary development workaround for debug builds, do not include in release build
+    // TODO: use meson to build and install everything in the appropriate paths.
+    // example for that: https://gitlab.gnome.org/danigm/fractal/blob/master/
+    // temporary development workaround for debug builds, do not include in release build
     {
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/res/resources.gresource");
@@ -52,7 +52,7 @@ fn main() {
         gio::resources_register(&resource);
 
         // https://askubuntu.com/questions/251712/how-can-i-install-a-gsettings-schema-without-root-privileges
-        //https://doc.rust-lang.org/1.15.0/std/env/
+        // https://doc.rust-lang.org/1.15.0/std/env/
         // GSETTINGS_SCHEMA_DIR=~/schemas
         let resources_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/res/");
         std::env::set_var("GSETTINGS_SCHEMA_DIR", resources_dir);

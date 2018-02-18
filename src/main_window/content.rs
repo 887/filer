@@ -28,6 +28,7 @@ pub struct Content {
     pub places_sidebar: gtk::PlacesSidebar,
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
+    pub paned: gtk::Paned,
 }
 
 impl Content {
@@ -53,6 +54,7 @@ impl Content {
                 .get_object::<gtk::SearchEntry>("search_entry")
                 .unwrap(),
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
+            paned: builder.get_object::<gtk::Paned>("paned").unwrap(),
         };
 
         content
@@ -72,6 +74,13 @@ impl Content {
         println!("file count: {}", fileliststore.count);
         self.left_tree_view.set_model(&fileliststore.list_store);
 
+        let icon_view = IconView::new();
+        icon_view.set_model(&fileliststore.list_store);
+
+        self.middle_scrolled_window.add_with_viewport(&icon_view);
+
         // if window.header.... todo
     }
+
+    pub fn update_center_view() {}
 }

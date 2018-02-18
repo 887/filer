@@ -12,7 +12,7 @@
     <property name="icon_name">computer</property>
     <property name="show_menubar">False</property>
     <child>
-      <object class="GtkPaned">
+      <object class="GtkPaned" id="paned">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <child>
@@ -373,6 +373,17 @@
           <packing>
             <property name="pack_type">end</property>
             <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFixed">
+            <property name="width_request">60</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>
