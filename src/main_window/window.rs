@@ -29,6 +29,9 @@ use glib::translate::*;
 const FILER_SETTINGS_PREFERENCES: &str = "a887.filer.preferences";
 const FILER_SETTINGS_WINDOW_STATE: &str = "a887.filer.window-state";
 const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
+const FILER_WINDOW_INITIAL_WIDTH: &str = "initial-width";
+const FILER_WINDOW_INITIAL_HEIGHT: &str = "initial-height";
+const FILER_WINDOW_MAXIMIZED: &str = "maximized";
 
 // #[derive(Clone)]
 pub struct MainWindow {
@@ -140,20 +143,30 @@ impl MainWindow {
             }));
 
         //https://wiki.gnome.org/HowDoI/SaveWindowState
-        //TODO: save window
+        let settings_window_state = self.settings_window_state.clone();
         self.window.connect_size_allocate(move |window, _event| {
             // save the window geometry only if we are not maximized of fullscreen
-            // if !(self.window.is_maximized() || self.window.fullscreen()) {
-
             if let Some(gdk_window) = window.get_window() {
                 let window_state = gdk_window.get_state();
-                if !(window.is_maximized() || window_state == gdk::WindowState::FULLSCREEN) {}
+                if !(window_state == gdk::WindowState::FULLSCREEN) {
+                    let (width, height) = window.get_size();
+                    let maximized = window.is_maximized();
+                    if !maximized {
+                        settings_window_state.set_int(FILER_WINDOW_INITIAL_WIDTH, width);
+                        settings_window_state.set_int(FILER_WINDOW_INITIAL_HEIGHT, height);
+                    }
+                    settings_window_state.set_boolean(FILER_WINDOW_MAXIMIZED, maximized);
+                }
             }
         });
 
-        self.window.connect_destroy(move |_window| {
-            // _window.store_state();
-        });
+        // self.window.connect_window_state_event(move |_window, _event| {
+        //     gtk::Inhibit(false)
+        // });
+        //
+        // self.window.connect_destroy(move |_window| {
+        //     // _window.store_state();
+        // });
     }
 
     fn map_window_actions(&mut self) {
@@ -206,7 +219,19 @@ impl MainWindow {
         //add window to application. This show the app menu when needed
         app.add_window(&self.window);
 
-        //show window first, then apply settings, otherwise it won't work
+        let initial_width = self.settings_window_state.
+            get_int(FILER_WINDOW_INITIAL_WIDTH);
+        let initial_height = self.settings_window_state.
+            get_int(FILER_WINDOW_INITIAL_HEIGHT);
+        let maximized = self.settings_window_state.
+            get_boolean(FILER_WINDOW_MAXIMIZED);
+
+        self.window.set_default_size(initial_width, initial_height);
+        if maximized {
+            self.window.maximize();
+        }
+
+        //show window first, then apply visible settings, otherwise it won't work
         self.window.show_all();
 
         //apply settings

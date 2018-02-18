@@ -13,10 +13,15 @@
   </schema>
 
   <schema path="/a887/filer/window-state/" id="a887.filer.window-state" gettext-domain="filer">
-      <key type="(ii)" name="initial-size">
-          <default>(900, 550)</default>
-          <summary>Initial size of the window</summary>
-          <description>A tuple containing the initial width and height of the application window.</description>
+      <key type="i" name="initial-width">
+          <default>900</default>
+          <summary>Initial width of the window</summary>
+          <description></description>
+      </key>
+      <key type="i" name="initial-height">
+          <default>550</default>
+          <summary>Initial height of the window</summary>
+          <description></description>
       </key>
       <key type="b" name="maximized">
           <default>false</default>
