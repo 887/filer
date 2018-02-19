@@ -93,8 +93,9 @@ impl Content {
     }
 
     pub fn create_icon_view(&self, model: &ListStore) -> gtk::IconView {
-        let icon_view = IconView::new();
-        icon_view.set_model(model);
+        // let icon_view = IconView::new();
+        // icon_view.set_model(model);
+        let icon_view = IconView::new_with_model(model);
         icon_view.set_visible(true);
         icon_view.set_text_column(0);
         icon_view.set_pixbuf_column(3);
