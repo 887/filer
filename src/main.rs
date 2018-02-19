@@ -24,6 +24,8 @@ use main_window::window::MainWindow;
 const APP_ID: &str = "a887.filer";
 
 #[cfg(feature = "experiments")]
+mod experiments;
+
 // cargo run --features "experiments"
 #[cfg(feature = "experiments")]
 fn main() {
