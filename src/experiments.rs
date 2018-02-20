@@ -62,6 +62,11 @@ pub fn run_experiments() {
         app.connect_activate(clone!(window => move |app| {
             println!("App Activated");
             map_actions(app, &window);
+
+            let image = gtk::Image::new_from_icon_name("folder", gtk::IconSize::Dialog.into());
+            image.set_visible(true);
+            window.add(&image);
+
             window.show();
         }));
 
