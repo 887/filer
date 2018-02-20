@@ -155,7 +155,8 @@ fn map_actions(app: &gtk::Application, window: &gtk::ApplicationWindow) {
     }));
 
     // adding none, true here lets the action act as a check box with the checked option on
-    let checkbox_action = gio::SimpleAction::new_stateful("toggle-check-box", None, &true.to_variant());
+    let checkbox_action =
+        gio::SimpleAction::new_stateful("toggle-check-box", None, &true.to_variant());
     window.add_action(&checkbox_action);
 
     //and this way its a radio button

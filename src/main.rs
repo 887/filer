@@ -5,23 +5,26 @@
 // trace_macros!(true);
 
 //#[macro_use]
+extern crate gettextrs;
 extern crate gio;
 extern crate glib;
 extern crate gtk;
 
 mod main_window;
+mod consts;
 
 use std::rc::Rc;
 use std::cell::RefCell;
+
+use gettextrs::*;
 
 use gtk::*;
 use gio::prelude::*;
 use gio::ApplicationFlags;
 use gio::Resource;
 
+use consts::APP_ID;
 use main_window::window::MainWindow;
-
-const APP_ID: &str = "a887.filer";
 
 #[cfg(feature = "experiments")]
 mod experiments;
@@ -35,6 +38,13 @@ fn main() {
 
 #[cfg(not(feature = "experiments"))]
 fn main() {
+    setlocale(LocaleCategory::LcAll, "en_US.UTF-8");
+    bindtextdomain(APP_ID, "/usr/local/share/locale");
+    textdomain(APP_ID);
+    // println!("Translated: {}", gettext("Hello, world!"));
+    // println!("Singular: {}", ngettext("One thing", "Multiple things", 1));
+    // println!("Plural: {}", ngettext("One thing", "Multiple things", 2));
+
     let app_result = gtk::Application::new(APP_ID, ApplicationFlags::FLAGS_NONE);
 
     if app_result.is_err() {
@@ -47,7 +57,7 @@ fn main() {
     // temporary development workaround for debug builds, do not include in release build
     {
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
-        let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/res/resources.gresource");
+        let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/data/resources.gresource");
         println!("{}", &("RESOURCES:".to_string() + resources_file));
         let resource = gio::Resource::load(resources_file).unwrap();
         //https://developer.gnome.org/gio/unstable/GResource.html#g-resources-register
@@ -56,13 +66,13 @@ fn main() {
         // https://askubuntu.com/questions/251712/how-can-i-install-a-gsettings-schema-without-root-privileges
         // https://doc.rust-lang.org/1.15.0/std/env/
         // GSETTINGS_SCHEMA_DIR=~/schemas
-        let resources_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/res/");
+        let resources_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/data/");
         std::env::set_var("GSETTINGS_SCHEMA_DIR", resources_dir);
     }
 
     let app: gtk::Application = app_result.unwrap();
 
-    let main_glade = include_str!("../res/main_window.glade");
+    let main_glade = include_str!("../data/main_window.glade");
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     app.connect_startup(move |app| {

@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 extern crate gdk;
-extern crate gtk;
 extern crate gdk_pixbuf;
+extern crate gtk;
 
 use gtk::*;
 use gtk::prelude::*;
@@ -24,7 +24,12 @@ pub struct FileListStore {
 impl FileListStore {
     pub fn new() -> FileListStore {
         FileListStore {
-            list_store: ListStore::new(&[Type::String, Type::String, Type::String, gdk_pixbuf::Pixbuf::static_type()]),
+            list_store: ListStore::new(&[
+                Type::String,
+                Type::String,
+                Type::String,
+                gdk_pixbuf::Pixbuf::static_type(),
+            ]),
             count: 0,
         }
     }
@@ -41,11 +46,15 @@ impl FileListStore {
             let _tree_iter = self.list_store.set(
                 &tree_iter,
                 &[0, 1, 2, 3],
-                &[&String::from(file_name_string), &String::from("b"), &String::from("image-x-generic"), &image.get_pixbuf()],
+                &[
+                    &String::from(file_name_string),
+                    &String::from("b"),
+                    &String::from("image-x-generic"),
+                    &image.get_pixbuf(),
+                ],
             );
             count += 1;
         }
         self.count = count;
     }
 }
-

@@ -21,18 +21,14 @@ use glib::variant::FromVariant;
 use gio::prelude::*;
 use gio::{MenuExt, MenuItemExt, SettingsExt};
 
+use consts::{FILER_SETTINGS_PREFERENCES, FILER_SETTINGS_WINDOW_STATE, FILER_WINDOW_INITIAL_HEIGHT,
+             FILER_WINDOW_INITIAL_WIDTH, FILER_WINDOW_MAXIMIZED, FILER_WINDOW_SIDEBAR_WIDTH,
+             FILER_WINDOW_START_WITH_SIDEBAR};
+
 use main_window::header::*;
 use main_window::content::*;
 
 use glib::translate::*;
-
-const FILER_SETTINGS_PREFERENCES: &str = "a887.filer.preferences";
-const FILER_SETTINGS_WINDOW_STATE: &str = "a887.filer.window-state";
-const FILER_WINDOW_START_WITH_SIDEBAR: &str = "start-with-sidebar";
-const FILER_WINDOW_INITIAL_WIDTH: &str = "initial-width";
-const FILER_WINDOW_INITIAL_HEIGHT: &str = "initial-height";
-const FILER_WINDOW_MAXIMIZED: &str = "maximized";
-const FILER_WINDOW_SIDEBAR_WIDTH: &str = "sidebar-width";
 
 // #[derive(Clone)]
 pub struct MainWindow {

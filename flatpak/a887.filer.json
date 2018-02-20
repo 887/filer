@@ -1,5 +1,5 @@
 {
-    "app-id" : "a887.Filer",
+    "app-id" : "a887.filer",
         "runtime" : "org.gnome.Platform",
         "runtime-version" : "master",
         "sdk" : "org.gnome.Sdk",
@@ -26,13 +26,13 @@
                 "--share=network"
             ],
             "env" : {
-                "CARGO_HOME" : "/run/build/Filer/cargo",
+                "CARGO_HOME" : "/run/build/filer/cargo",
                 "DEBUG" : "true"
             }
         },
         "modules" : [
         {
-            "name" : "Filer",
+            "name" : "filer",
             "buildsystem" : "meson",
             "sources" : [
             {

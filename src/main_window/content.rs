@@ -111,8 +111,5 @@ impl Content {
         tree_view
     }
 
-    pub fn update_center_view() {
-    }
-
-
+    pub fn update_center_view() {}
 }

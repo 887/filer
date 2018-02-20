@@ -50,6 +50,7 @@ version = "0.1.0"
 dependencies = [
  "gdk 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk-pixbuf 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gettext-rs 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "glib 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gtk 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -115,6 +116,11 @@ dependencies = [
  "pango-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "gettext-rs"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "gio"
@@ -284,6 +290,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum gdk-pixbuf 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "16160d212ae91abe9f3324c3fb233929ba322dde63585d15cda3336f8c529ed1"
 "checksum gdk-pixbuf-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "798f97101eea8180da363d0e80e07ec7ec6d1809306601c0100c1de5bc8b4f52"
 "checksum gdk-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d4ee916f5f25c5f4b21bd9dcb12a216ae697406940ff9476358c308a8ececada"
+"checksum gettext-rs 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "823d7e5d0e615f937c7629991bc9f4c090ad582303214c38744e1a16d6ffbe5e"
 "checksum gio 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "84ba5a2beb559059a0c9c2bd3681743cdede8d9a36c775840bca800333b22867"
 "checksum gio-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a303bbf7a5e75ab3b627117ff10e495d1b9e97e1d68966285ac2b1f6270091bc"
 "checksum glib 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "b9b0452824cc63066940f01adc721804919f0b76cdba3cfab977b00b87f16d4a"

@@ -11,6 +11,7 @@ experiments = []
 gdk = "0.7.0"
 gio = "0.3.0"
 gdk-pixbuf = "0.3.0"
+gettext-rs = "0.3.0"
 
 # [dependencigs]
 # webkit2gtk = "0.2.2"
