@@ -34,6 +34,12 @@ impl FileListStore {
         }
     }
 
+    fn get_icon_pixbuf(&self, icon_theme: &gtk::IconTheme, name: &str, size: i32) -> gdk_pixbuf::Pixbuf {
+        let icon_pixbuf_result_maybe = icon_theme.load_icon(
+            name, size, gtk::IconLookupFlags::GENERIC_FALLBACK);
+        icon_pixbuf_result_maybe.unwrap().unwrap()
+    }
+
     pub fn fill_from_path(&mut self, path: &PathBuf) {
         let paths = fs::read_dir(path).unwrap();
         let mut count = 0;
@@ -41,9 +47,8 @@ impl FileListStore {
         // let pixbuf: gdk_pixbuf::Pixbuf = image.get_pixbuf().unwrap();
 
         let icon_theme = gtk::IconTheme::get_default().unwrap();
-        let icon_pixbuf_result_maybe = icon_theme.load_icon("folder", 42,
-                                                            gtk::IconLookupFlags::GENERIC_FALLBACK );
-        let icon_pixbuf: gdk_pixbuf::Pixbuf = icon_pixbuf_result_maybe.unwrap().unwrap();
+        let icon_pixbuf: gdk_pixbuf::Pixbuf = self.get_icon_pixbuf(&icon_theme, "folder", 42);
+
         for path in paths {
             let tree_iter = self.list_store.append();
             let de: fs::DirEntry = path.unwrap();
