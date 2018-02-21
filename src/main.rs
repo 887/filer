@@ -10,8 +10,11 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
-mod main_window;
+#[macro_use]
+mod macros;
 mod consts;
+mod message_boxes;
+mod main_window;
 
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -24,6 +27,7 @@ use gio::ApplicationFlags;
 use gio::Resource;
 
 use consts::APP_ID;
+use message_boxes::{show_info_message_box,show_yes_no_message_box};
 use main_window::window::MainWindow;
 
 #[cfg(feature = "experiments")]
@@ -78,6 +82,8 @@ fn main() {
     app.connect_startup(move |app| {
         use std::env;
 
+        map_app_actions(&app);
+
         let mut main_window = MainWindow::new(&main_builder);
         main_window.startup(app);
 
@@ -94,6 +100,32 @@ fn main() {
             println!("End");
         });
     });
+
+    fn map_app_actions(app: &gtk::Application) {
+        //app actions
+        let preferences_action = gio::SimpleAction::new("preferences", None);
+        app.add_action(&preferences_action);
+
+        let help_action = gio::SimpleAction::new("help", None);
+        app.add_action(&help_action);
+        help_action.connect_activate(move |_, _| {
+            show_info_message_box(None, "TODO: show something helpful here");
+            let result = show_yes_no_message_box(None, "You won't, right?");
+            if !result {
+                println!("no you won't!");
+            }
+        });
+
+        let about_action = gio::SimpleAction::new("about", None);
+        app.add_action(&about_action);
+
+        let quit_action = gio::SimpleAction::new("quit", None);
+        app.add_action(&quit_action);
+
+        quit_action.connect_activate(clone!(app =>  move |_, _| {
+            app.quit();
+        }));
+    }
 
     app.run(&std::env::args().collect::<Vec<String>>());
 }

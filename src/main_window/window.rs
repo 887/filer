@@ -25,6 +25,8 @@ use consts::{FILER_SETTINGS_PREFERENCES, FILER_SETTINGS_WINDOW_STATE, FILER_WIND
              FILER_WINDOW_INITIAL_WIDTH, FILER_WINDOW_MAXIMIZED, FILER_WINDOW_SIDEBAR_WIDTH,
              FILER_WINDOW_START_WITH_SIDEBAR};
 
+use message_boxes::{show_info_message_box,show_yes_no_message_box};
+
 use main_window::header::*;
 use main_window::content::*;
 
@@ -67,7 +69,6 @@ impl MainWindow {
             self.create_menu(&app);
         }
 
-        self.map_app_actions(&app);
         self.map_window_actions();
         self.map_window_events(app);
         self.header.startup(&self, app);
@@ -103,33 +104,6 @@ impl MainWindow {
         app.set_app_menu(&menu_main);
 
         self.main_menu = Some(gtk::Menu::new_from_model(&menu_main));
-    }
-
-    fn map_app_actions(&mut self, app: &gtk::Application) {
-        //app actions
-        let preferences_action = gio::SimpleAction::new("preferences", None);
-        app.add_action(&preferences_action);
-
-        let help_action = gio::SimpleAction::new("help", None);
-        app.add_action(&help_action);
-        help_action.connect_activate(move |_, _| {
-            show_info_message_box(None, "TODO: show something helpful here");
-            let result = show_yes_no_message_box(None, "You won't, right?");
-            if !result {
-                println!("no you won't!");
-            }
-        });
-
-        let about_action = gio::SimpleAction::new("about", None);
-        app.add_action(&about_action);
-
-        let quit_action = gio::SimpleAction::new("quit", None);
-        app.add_action(&quit_action);
-
-        let window = self.window.clone();
-        quit_action.connect_activate(move |_, _| {
-            window.close();
-        });
     }
 
     pub fn map_window_events(&self, app: &gtk::Application) {
@@ -254,27 +228,3 @@ impl MainWindow {
     }
 }
 
-fn show_info_message_box(window: Option<&gtk::ApplicationWindow>, message: &str) {
-    let message_dialog = gtk::MessageDialog::new(
-        window,
-        DialogFlags::MODAL | DialogFlags::USE_HEADER_BAR | DialogFlags::DESTROY_WITH_PARENT,
-        MessageType::Info,
-        ButtonsType::Ok,
-        message,
-    );
-    let _response = message_dialog.run();
-    message_dialog.destroy();
-}
-
-fn show_yes_no_message_box(window: Option<&gtk::ApplicationWindow>, message: &str) -> bool {
-    let message_dialog = gtk::MessageDialog::new(
-        window,
-        DialogFlags::MODAL | DialogFlags::USE_HEADER_BAR | DialogFlags::DESTROY_WITH_PARENT,
-        MessageType::Question,
-        ButtonsType::YesNo,
-        message,
-    );
-    let response = message_dialog.run();
-    message_dialog.destroy();
-    ResponseType::from_glib(response) == ResponseType::Yes
-}
