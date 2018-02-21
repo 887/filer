@@ -97,7 +97,8 @@ impl Content {
         // icon_view.set_model(model);
         let icon_view = IconView::new_with_model(model);
         icon_view.set_visible(true);
-        icon_view.set_columns(1);
+        icon_view.set_columns(3);
+        icon_view.set_selection_mode(gtk::SelectionMode::Multiple);
         icon_view.set_text_column(0);
         icon_view.set_pixbuf_column(3);
         // gtk_icon_view_set_pixbuf_column ()
