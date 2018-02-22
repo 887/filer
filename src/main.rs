@@ -57,9 +57,8 @@ fn main() {
         return;
     }
 
-    // TODO: use meson to build and install everything in the appropriate paths.
-    // example for that: https://gitlab.gnome.org/danigm/fractal/blob/master/
-    // temporary development workaround for debug builds, do not include in release build
+    // TODO: build makefile for build/install.
+    // make IFDEF==debug for this development workaround, do not include it in release build
     {
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/data/resources.gresource");
