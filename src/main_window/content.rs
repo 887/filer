@@ -34,7 +34,7 @@ pub struct Content {
 
 impl Content {
     pub fn new(builder: &Builder) -> Content {
-        let content = Content {
+        Content {
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
             left_tree_view: builder
                 .get_object::<gtk::TreeView>("left_tree_view")
@@ -56,9 +56,7 @@ impl Content {
                 .unwrap(),
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
             paned: builder.get_object::<gtk::Paned>("paned").unwrap(),
-        };
-
-        content
+        }
     }
 
     pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {

@@ -14,6 +14,7 @@ extern crate gtk;
 mod macros;
 mod consts;
 mod message_boxes;
+mod prefrences;
 mod main_window;
 
 use std::rc::Rc;
@@ -80,9 +81,7 @@ fn main() {
     let main_builder: Builder = Builder::new_from_string(main_glade);
 
     app.connect_startup(move |app| {
-        use std::env;
-
-        map_app_actions(&app);
+        map_app_actions(app);
 
         let mut main_window = MainWindow::new(&main_builder);
         main_window.startup(app);

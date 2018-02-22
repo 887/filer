@@ -54,11 +54,11 @@ impl FileListStore {
             let de: fs::DirEntry = path.unwrap();
             let file_name: OsString = de.file_name();
             let file_name_string = file_name.into_string().unwrap();
-            let _tree_iter = self.list_store.set(
+            self.list_store.set(
                 &tree_iter,
                 &[0, 1, 2, 3],
                 &[
-                    &String::from(file_name_string),
+                    &file_name_string,
                     &String::from("b"),
                     &String::from("image-x-generic"),
                     &icon_pixbuf,

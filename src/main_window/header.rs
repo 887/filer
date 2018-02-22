@@ -23,7 +23,7 @@ pub struct Header {
 
 impl Header {
     pub fn new(builder: &Builder) -> Header {
-        let header = Header {
+        Header {
             header_bar: builder.get_object::<HeaderBar>("header").unwrap(),
             back_button: builder.get_object::<Button>("back_button").unwrap(),
             forward_button: builder.get_object::<Button>("forward_button").unwrap(),
@@ -39,9 +39,7 @@ impl Header {
                 .get_object::<ToggleButton>("icons_view_toggle_button")
                 .unwrap(),
             test_option: Rc::new(Cell::new(false)),
-        };
-
-        header
+        }
     }
 
     pub fn is_any_view_toogle_button_active(&self) -> bool {

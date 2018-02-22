@@ -66,13 +66,13 @@ impl MainWindow {
             self.main_menu = Some(gtk::Menu::new_from_model(&menu));
         } else {
             //fallback if application resource loading is broken
-            self.create_menu(&app);
+            self.create_menu(app);
         }
 
         self.map_window_actions();
         self.map_window_events(app);
-        self.header.startup(&self, app);
-        self.contents.startup(&self, app);
+        self.header.startup(self, app);
+        self.contents.startup(self, app);
     }
 
     fn create_menu(&mut self, app: &gtk::Application) {
@@ -220,7 +220,7 @@ impl MainWindow {
         }
 
         //acivate window contents and load them
-        self.contents.activate(&self);
+        self.contents.activate(self);
     }
 
     pub fn shutdown(&self, _app: &gtk::Application) {
