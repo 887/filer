@@ -76,17 +76,15 @@ fn main() {
 
     let app: gtk::Application = app_result.unwrap();
 
-    let main_glade = include_str!("../data/main_window.glade");
-
     app.connect_startup(move |app| {
         //TODO: load from resources
-        let main_builder: gtk::Builder = Builder::new_from_string(main_glade);
+        let main_builder: gtk::Builder = get_builder();
 
         let mut main_window = MainWindow::new(&main_builder);
         main_window.startup(app);
         let window_ref = Rc::new(RefCell::new(main_window));
 
-        map_app_actions(app, main_builder);
+        map_app_actions(app);
 
         let window_ref_activate = window_ref.clone();
         app.connect_activate(move |app| {
@@ -99,7 +97,7 @@ fn main() {
         });
     });
 
-    fn map_app_actions(app: &gtk::Application, main_builder: gtk::Builder) {
+    fn map_app_actions(app: &gtk::Application) {
         //app actions
         let preferences_action = gio::SimpleAction::new("preferences", None);
         app.add_action(&preferences_action);
@@ -117,10 +115,10 @@ fn main() {
         let clone_window_action = gio::SimpleAction::new("clone-window", None);
         app.add_action(&clone_window_action);
         clone_window_action.connect_activate(clone!(app => move |_, _| {
+            let main_builder: gtk::Builder = get_builder();
             let mut main_window = MainWindow::new(&main_builder);
             main_window.startup(&app);
             main_window.activate(&app);
-            println!("{}", "whatwhat");
             app.connect_shutdown(move |app| {
                 main_window.shutdown(app);
             });
@@ -138,6 +136,11 @@ fn main() {
     }
 
     app.run(&std::env::args().collect::<Vec<String>>());
+}
+
+fn get_builder() -> gtk::Builder {
+    let main_glade = include_str!("../data/main_window.glade");
+    Builder::new_from_string(main_glade)
 }
 
 #[cfg(test)]
