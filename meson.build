@@ -5,6 +5,8 @@ project('a887.filer','rust',
 )
 i18n = import('i18n')
 
+subdir('data')
+subdir('src')
 subdir('po')
 
 cargo = find_program('cargo', required: true)

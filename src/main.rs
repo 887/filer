@@ -121,6 +121,7 @@ fn main() {
             let mut main_window = MainWindow::new(&main_builder);
             main_window.startup(&app);
             main_window.activate(&app);
+            println!("{}", "whatwhat");
             app.connect_shutdown(move |app| {
                 main_window.shutdown(app);
             });
