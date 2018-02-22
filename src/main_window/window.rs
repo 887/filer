@@ -62,11 +62,10 @@ impl MainWindow {
     pub fn startup(&mut self, app: &gtk::Application) {
         let maybe_menu = app.get_app_menu();
         if let Some(menu) = maybe_menu {
-            println!("Menu loaded from resources");
+            // println!("Menu loaded from resources");
             self.main_menu = Some(gtk::Menu::new_from_model(&menu));
         } else {
-            //fallback if application resource loading is broken
-            self.create_menu(app);
+            panic!("application resource loading is broken!");
         }
 
         self.map_window_actions();
@@ -75,41 +74,13 @@ impl MainWindow {
         self.contents.startup(self, app);
     }
 
-    fn create_menu(&mut self, app: &gtk::Application) {
-        let menu_main = gio::Menu::new();
-
-        let menu_sidebar = gio::Menu::new();
-        // https://people.gnome.org/~gcampagna/docs/Gio-2.0/Gio.MenuModel.html
-
-        let sidebar_menu_item = gio::MenuItem::new("_Show Sidebar", "win.show-sidebar");
-        menu_sidebar.append_item(&sidebar_menu_item);
-        // sidebar_menu_item.set_action_and_target_value("win.show-sidebar", &true.to_variant());
-        menu_main.append_section(None, &menu_sidebar);
-
-        let menu_preferences = gio::Menu::new();
-        menu_preferences.append("Prefere_nces", "app.preferences");
-        menu_main.append_section(None, &menu_preferences);
-
-        let menu_actions = gio::Menu::new();
-        menu_actions.append("_Keyboard Shortcuts", "win.show-help-overlay");
-        menu_actions.append("_Help", "app.help");
-        menu_actions.append("_About", "app.about");
-
-        let quit_menu_item = gio::MenuItem::new("_Quit", "app.quit");
-        menu_actions.append_item(&quit_menu_item);
-
-        menu_main.append_section(None, &menu_actions);
-
-        //this is expected to be done during application statup, otherwise it wont work
-        app.set_app_menu(&menu_main);
-
-        self.main_menu = Some(gtk::Menu::new_from_model(&menu_main));
-    }
-
     pub fn map_window_events(&self, app: &gtk::Application) {
         self.window
             .connect_delete_event(clone!(app => move |_window, _event| {
-                app.quit();
+                let windows = app.get_windows().len();
+                if windows <= 1 {
+                    app.quit();
+                }
                 gtk::Inhibit(false)
             }));
 
@@ -177,8 +148,6 @@ impl MainWindow {
 
         help_overlay_action.connect_activate(
             clone!(window => move |_help_overlay_action, _maybe_value| {
-                //gtk_application_window_set_help_overlay ()
-                //gtk_application_window_get_help_overlay ()
                 let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
                 if let Some(help_window) = help_window {
                     help_window.show();
@@ -190,7 +159,6 @@ impl MainWindow {
     }
 
     pub fn activate(&self, app: &gtk::Application) {
-        //add window to application. This show the app menu when needed
         app.add_window(&self.window);
 
         let initial_width = self.settings_window_state
