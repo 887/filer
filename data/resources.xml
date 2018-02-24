@@ -2,7 +2,8 @@
 <gresources>
     <gresource prefix="/a887/filer/">
         <file preprocess="xml-stripblanks">gtk/menus.ui</file>
-        <file preprocess="xml-stripblanks">main_window.glade</file>
+        <file preprocess="xml-stripblanks">gtk/main_window.glade</file>
+        <file preprocess="xml-stripblanks">gtk/shortcuts_main_window.ui</file>
     </gresource>
 </gresources>
 

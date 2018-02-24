@@ -148,11 +148,17 @@ impl MainWindow {
 
         help_overlay_action.connect_activate(
             clone!(window => move |_help_overlay_action, _maybe_value| {
-                let help_window: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
-                if let Some(help_window) = help_window {
-                    help_window.show();
+                let help_overlay: Option<gtk::ShortcutsWindow> = window.get_help_overlay();
+                if let Some(help_overlay) = help_overlay {
+                    help_overlay.show();
                 } else {
-                    show_info_message_box(Some(&window), "Help me!");
+                    //TODO: load from resources
+                    let ui_str = include_str!("../../data/gtk/shortcuts_main_window.ui");
+                    let builder: gtk::Builder = Builder::new_from_string(ui_str);
+                    let new_help_overlay = builder.get_object::<gtk::ShortcutsWindow>("shortcuts_main_window")
+                        .unwrap();
+                    window.set_help_overlay(&new_help_overlay);
+                    new_help_overlay.show();
                 }
             }),
         );

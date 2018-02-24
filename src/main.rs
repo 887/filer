@@ -46,7 +46,7 @@ fn main() {
     setlocale(LocaleCategory::LcAll, "en_US.UTF-8");
     bindtextdomain(APP_ID, "/usr/local/share/locale");
     textdomain(APP_ID);
-    // println!("Translated: {}", gettext("Hello, world!"));
+    println!("Translated: {}", gettext("Hello, world!"));
     // println!("Singular: {}", ngettext("One thing", "Multiple things", 1));
     // println!("Plural: {}", ngettext("One thing", "Multiple things", 2));
 
@@ -77,7 +77,6 @@ fn main() {
     let app: gtk::Application = app_result.unwrap();
 
     app.connect_startup(move |app| {
-        //TODO: load from resources
         let main_builder: gtk::Builder = get_builder();
 
         let mut main_window = MainWindow::new(&main_builder);
@@ -139,7 +138,8 @@ fn main() {
 }
 
 fn get_builder() -> gtk::Builder {
-    let main_glade = include_str!("../data/main_window.glade");
+    //TODO: load from resources
+    let main_glade = include_str!("../data/gtk/main_window.glade");
     Builder::new_from_string(main_glade)
 }
 
