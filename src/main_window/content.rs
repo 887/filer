@@ -107,6 +107,11 @@ impl Content {
         let tree_view = TreeView::new();
         tree_view.set_model(model);
         tree_view.set_visible(true);
+        //TODO:
+        //cant set cell renderer from gtk-rs, because its unimplemented,
+        //use builder .ui file for now
+        let column = TreeViewColumn::new();
+        tree_view.append_column(&column);
         tree_view
     }
 
