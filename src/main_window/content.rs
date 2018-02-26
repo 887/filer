@@ -73,13 +73,16 @@ impl Content {
         println!("file count: {}", fileliststore.count);
         self.left_tree_view.set_model(&fileliststore.list_store);
 
-        let icon_view = self.create_icon_view(&fileliststore.list_store);
-        self.middle_scrolled_window.add_with_viewport(&icon_view);
+        // let icon_view = self.create_icon_view(&fileliststore.list_store);
+        // self.middle_scrolled_window.add_with_viewport(&icon_view);
+
+        let tree_view = self.create_tree_view(&fileliststore.list_store);
+        self.middle_scrolled_window.add_with_viewport(&tree_view);
     }
 
-    // https://developer.gnome.org/gtk3/stable/GtkImage.html
+    // https://developer.gnome.org/gtk3/stable&fileliststore.list_store/GtkImage.html
     //
-    // Creates a GtkImage displaying an icon from the current icon theme. If the icon name isn’t known, a “broken image” icon will be displayed instead. If the current icon theme is changed, the icon will be updated appropriately.
+    // Creates a GtkImage displaying an icon f&fileliststore.list_storerom the current icon theme. If the icon name isn’t known, a “broken image” icon will be displayed instead. If the current icon theme is changed, the icon will be updated appropriately.
     // gtk_image_new_from_icon_name ()
 
     // https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html#GtkIconSize
@@ -104,14 +107,18 @@ impl Content {
     }
 
     pub fn create_tree_view(&self, model: &ListStore) -> gtk::TreeView {
-        let tree_view = TreeView::new();
+        let ui_str = include_str!("../../data/gtk/file_tree_view.ui");
+        let builder: gtk::Builder = Builder::new_from_string(ui_str);
+        let tree_view = builder.get_object::<gtk::TreeView>("file_tree_view").unwrap();
         tree_view.set_model(model);
-        tree_view.set_visible(true);
-        //TODO:
-        //cant set cell renderer from gtk-rs, because its unimplemented,
-        //use builder .ui file for now
-        let column = TreeViewColumn::new();
-        tree_view.append_column(&column);
+        // let tree_view = TreeView::new();
+        // tree_view.set_model(model);
+        // tree_view.set_visible(true);
+        // //TODO:
+        // //cant set cell renderer from gtk-rs, because its unimplemented,
+        // //use builder .ui file for now
+        // let column = TreeViewColumn::new();
+        // tree_view.append_column(&column);
         tree_view
     }
 
