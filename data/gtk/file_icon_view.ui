@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.21.0 -->
+<interface>
+  <requires lib="gtk+" version="3.17"/>
+  <object class="GtkIconView" id="file_icon_view">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="margin">0</property>
+    <property name="selection_mode">multiple</property>
+    <property name="item_orientation">horizontal</property>
+    <property name="columns">2</property>
+    <property name="row_spacing">0</property>
+    <property name="column_spacing">0</property>
+    <property name="item_padding">0</property>
+  </object>
+</interface>

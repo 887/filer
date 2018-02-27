@@ -73,11 +73,11 @@ impl Content {
         println!("file count: {}", fileliststore.count);
         self.left_tree_view.set_model(&fileliststore.list_store);
 
-        // let icon_view = self.create_icon_view(&fileliststore.list_store);
-        // self.middle_scrolled_window.add_with_viewport(&icon_view);
+        let icon_view = self.create_icon_view(&fileliststore.list_store);
+        self.middle_scrolled_window.add_with_viewport(&icon_view);
 
-        let tree_view = self.create_tree_view(&fileliststore.list_store);
-        self.middle_scrolled_window.add_with_viewport(&tree_view);
+        // let tree_view = self.create_tree_view(&fileliststore.list_store);
+        // self.middle_scrolled_window.add_with_viewport(&tree_view);
     }
 
     // https://developer.gnome.org/gtk3/stable&fileliststore.list_store/GtkImage.html
@@ -96,13 +96,19 @@ impl Content {
     pub fn create_icon_view(&self, model: &ListStore) -> gtk::IconView {
         // let icon_view = IconView::new();
         // icon_view.set_model(model);
-        let icon_view = IconView::new_with_model(model);
-        icon_view.set_visible(true);
-        icon_view.set_columns(3);
-        icon_view.set_selection_mode(gtk::SelectionMode::Multiple);
+
+        // let icon_view = IconView::new_with_model(model);
+        // icon_view.set_visible(true);
+        // icon_view.set_columns(3);
+        // icon_view.set_selection_mode(gtk::SelectionMode::Multiple);
+
+        let ui_str = include_str!("../../data/gtk/file_icon_view.ui");
+        let builder: gtk::Builder = Builder::new_from_string(ui_str);
+        let icon_view = builder.get_object::<gtk::IconView>("file_icon_view").unwrap();
+        icon_view.set_model(model);
+
         icon_view.set_text_column(0);
         icon_view.set_pixbuf_column(3);
-        // gtk_icon_view_set_pixbuf_column ()
         icon_view
     }
 
