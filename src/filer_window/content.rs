@@ -76,6 +76,35 @@ impl Content {
         let icon_view = self.create_icon_view(&fileliststore.list_store);
         self.middle_scrolled_window.add_with_viewport(&icon_view);
 
+        self.middle_scrolled_window.connect_map_event(move |_middle_scrolled_window, _event| {
+            // self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
+            Inhibit(false)
+        });
+
+        self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
+            // let item_width = icon_view.get_item_width();
+
+            // let width = allocation.width;
+            // if width > 0 {
+            //     icon_view.set_item_width((width/4) -1);
+            // }
+
+            // println!("{}", width);
+
+            // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
+            // if scrollbar.get_visible() {
+            //     let _item_width = icon_view.set_item_width(width/2);
+            // } else {
+            //     let _item_width = icon_view.set_item_width(width/2 - 1);
+            // }
+
+            // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
+            // let columns = icon_view.get_columns();
+            // if scrollbar.get_visible() {
+            //         icon_view.set_columns(columns - 1);
+            // middle_scrolled_window.set_width();
+        });
+
         // let tree_view = self.create_tree_view(&fileliststore.list_store);
         // self.middle_scrolled_window.add_with_viewport(&tree_view);
     }
