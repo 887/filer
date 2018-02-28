@@ -16,8 +16,8 @@ use glib::variant::FromVariant;
 use gtk::*;
 use gtk::prelude::*;
 
-use main_window::fileliststore::*;
-use main_window::window::MainWindow;
+use filer_window::fileliststore::*;
+use filer_window::window::FilerWindow;
 
 // #[derive(Clone)]
 pub struct Content {
@@ -59,15 +59,15 @@ impl Content {
         }
     }
 
-    pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {
-        let header = &main_window.header;
+    pub fn startup(&self, filer_window: &FilerWindow, _app: &gtk::Application) {
+        let header = &filer_window.header;
         self.search_entry
             .connect_stop_search(clone!(header => move |_search_entry| {
             header.find_toggle_button.set_active(false);
         }));
     }
 
-    pub fn activate(&self, _window: &MainWindow) {
+    pub fn activate(&self, _window: &FilerWindow) {
         let mut fileliststore = FileListStore::new();
         fileliststore.fill_from_path(&home_dir().unwrap());
         println!("file count: {}", fileliststore.count);

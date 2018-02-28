@@ -6,7 +6,7 @@ use std::rc::Rc;
 use gtk::*;
 use gtk::prelude::*;
 
-use main_window::window::MainWindow;
+use filer_window::window::FilerWindow;
 
 #[derive(Clone)]
 pub struct Header {
@@ -48,7 +48,7 @@ impl Header {
 }
 
 impl Header {
-    pub fn startup(&self, main_window: &MainWindow, _app: &gtk::Application) {
+    pub fn startup(&self, filer_window: &FilerWindow, _app: &gtk::Application) {
         let header = self.clone();
         self.icons_view_toggle_button
             .connect_clicked(move |button| {
@@ -71,7 +71,7 @@ impl Header {
                 }
             });
 
-        let search_bar = main_window.contents.search_bar.clone();
+        let search_bar = filer_window.contents.search_bar.clone();
         self.find_toggle_button.connect_clicked(move |button| {
             search_bar.set_search_mode(button.get_active());
         });

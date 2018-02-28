@@ -15,7 +15,7 @@ mod macros;
 mod consts;
 mod message_boxes;
 mod prefrences;
-mod main_window;
+mod filer_window;
 
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -29,7 +29,7 @@ use gio::Resource;
 
 use consts::APP_ID;
 use message_boxes::{show_info_message_box,show_yes_no_message_box};
-use main_window::window::MainWindow;
+use filer_window::window::FilerWindow;
 
 #[cfg(feature = "experiments")]
 mod experiments;
@@ -77,9 +77,9 @@ fn main() {
     let app: gtk::Application = app_result.unwrap();
 
     app.connect_startup(move |app| {
-        let main_builder: gtk::Builder = get_builder();
+        let builder: gtk::Builder = get_builder();
 
-        let mut main_window = MainWindow::new(&main_builder);
+        let mut main_window = FilerWindow::new(&builder);
         main_window.startup(app);
         let window_ref = Rc::new(RefCell::new(main_window));
 
@@ -115,7 +115,7 @@ fn main() {
         app.add_action(&clone_window_action);
         clone_window_action.connect_activate(clone!(app => move |_, _| {
             let main_builder: gtk::Builder = get_builder();
-            let mut main_window = MainWindow::new(&main_builder);
+            let mut main_window = FilerWindow::new(&main_builder);
             main_window.startup(&app);
             main_window.activate(&app);
             app.connect_shutdown(move |app| {
@@ -139,8 +139,8 @@ fn main() {
 
 fn get_builder() -> gtk::Builder {
     //TODO: load from resources
-    let main_glade = include_str!("../data/gtk/main_window.glade");
-    Builder::new_from_string(main_glade)
+    let filer_window_glade = include_str!("../data/gtk/filer_window.glade");
+    Builder::new_from_string(filer_window_glade)
 }
 
 #[cfg(test)]

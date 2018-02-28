@@ -27,13 +27,13 @@ use consts::{FILER_SETTINGS_PREFERENCES, FILER_SETTINGS_WINDOW_STATE, FILER_WIND
 
 use message_boxes::{show_info_message_box,show_yes_no_message_box};
 
-use main_window::header::*;
-use main_window::content::*;
+use filer_window::header::*;
+use filer_window::content::*;
 
 use glib::translate::*;
 
 // #[derive(Clone)]
-pub struct MainWindow {
+pub struct FilerWindow {
     pub window: gtk::ApplicationWindow,
     pub header: Header,
     pub contents: Content,
@@ -42,9 +42,9 @@ pub struct MainWindow {
     pub settings_preferences: gio::Settings,
 }
 
-impl MainWindow {
-    pub fn new(builder: &Builder) -> MainWindow {
-        let main_window = MainWindow {
+impl FilerWindow {
+    pub fn new(builder: &Builder) -> FilerWindow {
+        let filer_window = FilerWindow {
             window: builder
                 .get_object::<ApplicationWindow>("main_application_window")
                 .unwrap(),
@@ -55,8 +55,8 @@ impl MainWindow {
             settings_window_state: gio::Settings::new(FILER_SETTINGS_WINDOW_STATE),
         };
 
-        main_window.window.set_title("Filer");
-        main_window
+        filer_window.window.set_title("Filer");
+        filer_window
     }
 
     pub fn startup(&mut self, app: &gtk::Application) {
@@ -153,9 +153,9 @@ impl MainWindow {
                     help_overlay.show();
                 } else {
                     //TODO: load from resources
-                    let ui_str = include_str!("../../data/gtk/shortcuts_main_window.ui");
+                    let ui_str = include_str!("../../data/gtk/shortcuts_filer_window.ui");
                     let builder: gtk::Builder = Builder::new_from_string(ui_str);
-                    let new_help_overlay = builder.get_object::<gtk::ShortcutsWindow>("shortcuts_main_window")
+                    let new_help_overlay = builder.get_object::<gtk::ShortcutsWindow>("shortcuts_filer_window")
                         .unwrap();
                     window.set_help_overlay(&new_help_overlay);
                     new_help_overlay.show();
