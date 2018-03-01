@@ -81,7 +81,7 @@ impl Content {
             Inhibit(false)
         });
 
-        self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
+        self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, _allocation| {
             // let item_width = icon_view.get_item_width();
 
             // let width = allocation.width;

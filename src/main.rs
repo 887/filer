@@ -31,17 +31,6 @@ use consts::APP_ID;
 use message_boxes::{show_info_message_box,show_yes_no_message_box};
 use filer_window::window::FilerWindow;
 
-#[cfg(feature = "experiments")]
-mod experiments;
-
-// cargo run --features "experiments"
-#[cfg(feature = "experiments")]
-fn main() {
-    println!("experiments");
-    experiments::run_experiments();
-}
-
-#[cfg(not(feature = "experiments"))]
 fn main() {
     setlocale(LocaleCategory::LcAll, "en_US.UTF-8");
     bindtextdomain(APP_ID, "/usr/local/share/locale");
@@ -58,7 +47,7 @@ fn main() {
     }
 
     // TODO: build makefile for build/install.
-    // make IFDEF==debug for this development workaround, do not include it in release build
+    // make IF_DEF==debug for this development workaround, do not include it in release build
     {
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/data/resources.gresource");
