@@ -27,14 +27,15 @@ use gio::prelude::*;
 use gio::ApplicationFlags;
 use gio::Resource;
 
-use consts::APP_ID;
+use consts::{APP_ID, GETTEXT_PACKAGE};
 use message_boxes::{show_info_message_box,show_yes_no_message_box};
 use filer_window::window::FilerWindow;
 
 fn main() {
-    setlocale(LocaleCategory::LcAll, "en_US.UTF-8");
     bindtextdomain(APP_ID, "/usr/local/share/locale");
+    bind_textdomain_codeset(APP_ID, "UTF-8");
     textdomain(APP_ID);
+
     println!("Translated: {}", gettext("Hello, world!"));
     // println!("Singular: {}", ngettext("One thing", "Multiple things", 1));
     // println!("Plural: {}", ngettext("One thing", "Multiple things", 2));
@@ -49,6 +50,9 @@ fn main() {
     // TODO: build makefile for build/install.
     // make IF_DEF==debug for this development workaround, do not include it in release build
     {
+        // set development language to english
+        // setlocale(LocaleCategory::LcAll, "en_US.UTF-8"); //set the actual language
+
         // GtkApplication will automatically load menus from the GtkBuilder resource located at "gtk/menus.ui",
         let resources_file = concat!(env!("CARGO_MANIFEST_DIR"), "/data/resources.gresource");
         println!("{}", &("RESOURCES:".to_string() + resources_file));
@@ -64,6 +68,8 @@ fn main() {
     }
 
     let app: gtk::Application = app_result.unwrap();
+
+    glib::set_program_name(Some("filer"));
 
     app.connect_startup(move |app| {
         let builder: gtk::Builder = get_builder();
