@@ -8,3 +8,4 @@ pub const FILER_WINDOW_SIDEBAR_WIDTH: &str = "sidebar-width";
 
 pub const APP_ID: &str = "a887.filer";
 pub const GETTEXT_PACKAGE: &str = APP_ID;
+pub const LOCALEDIR: &str = "/usr/local/share/locale";

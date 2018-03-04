@@ -73,8 +73,11 @@ impl Content {
         println!("file count: {}", fileliststore.count);
         self.left_tree_view.set_model(&fileliststore.list_store);
 
-        let icon_view = self.create_icon_view(&fileliststore.list_store);
-        self.middle_scrolled_window.add_with_viewport(&icon_view);
+        // let icon_view = self.create_icon_view(&fileliststore.list_store);
+        // self.middle_scrolled_window.add_with_viewport(&icon_view);
+
+        let tree_view = self.create_tree_view(&fileliststore.list_store);
+        self.middle_scrolled_window.add_with_viewport(&tree_view);
 
         self.middle_scrolled_window.connect_map_event(move |_middle_scrolled_window, _event| {
             // self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
@@ -105,13 +108,13 @@ impl Content {
             // middle_scrolled_window.set_width();
         });
 
-        // let tree_view = self.create_tree_view(&fileliststore.list_store);
-        // self.middle_scrolled_window.add_with_viewport(&tree_view);
     }
 
     // https://developer.gnome.org/gtk3/stable&fileliststore.list_store/GtkImage.html
     //
-    // Creates a GtkImage displaying an icon f&fileliststore.list_storerom the current icon theme. If the icon name isn’t known, a “broken image” icon will be displayed instead. If the current icon theme is changed, the icon will be updated appropriately.
+    // Creates a GtkImage displaying an icon f&fileliststore.list_storerom the current icon theme.
+    // If the icon name isn’t known, a “broken image” icon will be displayed instead.
+    // If the current icon theme is changed, the icon will be updated appropriately.
     // gtk_image_new_from_icon_name ()
 
     // https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html#GtkIconSize

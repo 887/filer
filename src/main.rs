@@ -27,12 +27,12 @@ use gio::prelude::*;
 use gio::ApplicationFlags;
 use gio::Resource;
 
-use consts::{APP_ID, GETTEXT_PACKAGE};
+use consts::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
 use message_boxes::{show_info_message_box,show_yes_no_message_box};
 use filer_window::window::FilerWindow;
 
 fn main() {
-    bindtextdomain(APP_ID, "/usr/local/share/locale");
+    bindtextdomain(APP_ID, LOCALEDIR);
     bind_textdomain_codeset(APP_ID, "UTF-8");
     textdomain(APP_ID);
 
