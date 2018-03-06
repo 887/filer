@@ -15,6 +15,7 @@ mod macros;
 mod consts;
 mod message_boxes;
 mod prefrences;
+mod widgets;
 mod filer_window;
 
 use std::rc::Rc;

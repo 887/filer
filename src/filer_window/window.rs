@@ -30,6 +30,8 @@ use message_boxes::{show_info_message_box,show_yes_no_message_box};
 use filer_window::header::*;
 use filer_window::content::*;
 
+use widgets::icon_list_view::{IconListView, IconListViewColumn, IconListViewEntry};
+
 use glib::translate::*;
 
 // #[derive(Clone)]
