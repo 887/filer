@@ -68,6 +68,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -111,6 +112,21 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkScale">
+                    <property name="width_request">50</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">middle_adjustment</property>
+                    <property name="draw_value">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -126,8 +142,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
               </object>
@@ -175,70 +190,94 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="left_scrolled_window">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="shadow_type">in</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkTreeView" id="left_tree_view">
+                      <object class="GtkScrolledWindow" id="left_scrolled_window">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="expander_column">treeviewcolumn1</property>
-                        <property name="search_column">0</property>
-                        <property name="show_expanders">False</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection">
-                            <property name="mode">multiple</property>
-                          </object>
-                        </child>
+                        <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Name</property>
-                            <child>
-                              <object class="GtkCellRendererPixbuf" id="left_treeview_pixbuf_column"/>
-                              <attributes>
-                                <attribute name="pixbuf">3</attribute>
-                                <attribute name="stock-detail">1</attribute>
-                              </attributes>
+                          <object class="GtkTreeView" id="left_tree_view">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="expander_column">treeviewcolumn1</property>
+                            <property name="search_column">0</property>
+                            <property name="show_expanders">False</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection">
+                                <property name="mode">multiple</property>
+                              </object>
                             </child>
                             <child>
-                              <object class="GtkCellRendererText"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
+                              <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                                <property name="sizing">autosize</property>
+                                <property name="title" translatable="yes">Name</property>
+                                <child>
+                                  <object class="GtkCellRendererPixbuf" id="left_treeview_pixbuf_column"/>
+                                  <attributes>
+                                    <attribute name="pixbuf">3</attribute>
+                                    <attribute name="stock-detail">1</attribute>
+                                  </attributes>
+                                </child>
+                                <child>
+                                  <object class="GtkCellRendererText"/>
+                                  <attributes>
+                                    <attribute name="text">0</attribute>
+                                  </attributes>
+                                </child>
+                              </object>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn" id="Type">
-                            <property name="title" translatable="yes">Type</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Size</property>
                             <child>
-                              <object class="GtkCellRendererText"/>
-                              <attributes>
-                                <attribute name="text">1</attribute>
-                              </attributes>
+                              <object class="GtkTreeViewColumn" id="Type">
+                                <property name="title" translatable="yes">Type</property>
+                              </object>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Modified</property>
                             <child>
-                              <object class="GtkCellRendererText">
-                                <property name="alignment">right</property>
+                              <object class="GtkTreeViewColumn">
+                                <property name="sizing">autosize</property>
+                                <property name="title" translatable="yes">Size</property>
+                                <child>
+                                  <object class="GtkCellRendererText"/>
+                                  <attributes>
+                                    <attribute name="text">1</attribute>
+                                  </attributes>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkTreeViewColumn">
+                                <property name="sizing">autosize</property>
+                                <property name="title" translatable="yes">Modified</property>
+                                <child>
+                                  <object class="GtkCellRendererText">
+                                    <property name="alignment">right</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">label</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -286,20 +325,6 @@
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
                                 <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkScale">
-                                <property name="width_request">50</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="adjustment">middle_adjustment</property>
-                                <property name="draw_value">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
