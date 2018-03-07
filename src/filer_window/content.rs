@@ -25,10 +25,11 @@ pub struct Content {
     pub left_tree_view: gtk::TreeView,
     pub left_scrolled_window: gtk::ScrolledWindow,
     pub middle_scrolled_window: gtk::ScrolledWindow,
-    pub right_scrolled_window: gtk::ScrolledWindow,
+    pub preview_scrolled_window: gtk::ScrolledWindow,
     pub places_sidebar: gtk::PlacesSidebar,
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
+    pub postview_content_paned: gtk::Paned,
     pub paned: gtk::Paned,
 }
 
@@ -45,7 +46,7 @@ impl Content {
             middle_scrolled_window: builder
                 .get_object::<gtk::ScrolledWindow>("middle_scrolled_window")
                 .unwrap(),
-            right_scrolled_window: builder
+            preview_scrolled_window: builder
                 .get_object::<gtk::ScrolledWindow>("right_scrolled_window")
                 .unwrap(),
             places_sidebar: builder

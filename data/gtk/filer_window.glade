@@ -24,7 +24,7 @@
     <property name="icon_name">computer</property>
     <property name="show_menubar">False</property>
     <child>
-      <object class="GtkPaned" id="paned">
+      <object class="GtkPaned" id="navigation_paned">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <child>
@@ -186,7 +186,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkPaned">
+              <object class="GtkPaned" id="postview_content_paned">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="wide_handle">True</property>
@@ -201,7 +201,7 @@
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkTreeView" id="left_tree_view">
+                          <object class="GtkTreeView" id="post_tree_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="expander_column">treeviewcolumn1</property>
@@ -287,7 +287,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkPaned">
+                  <object class="GtkPaned" id="content_preview_paned">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="wide_handle">True</property>
@@ -297,7 +297,7 @@
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkScrolledWindow" id="middle_scrolled_window">
+                          <object class="GtkScrolledWindow" id="content_scrolled_window">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="shadow_type">in</property>
@@ -330,7 +330,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow" id="right_scrolled_window">
+                      <object class="GtkScrolledWindow" id="preview_scrolled_window">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
