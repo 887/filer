@@ -185,6 +185,9 @@ impl FilerWindow {
 
         self.contents.navigation_paned.set_position(sidebar_width);
 
+        // let width = self.contents.postview_content_paned.get_position();
+        self.contents.postview_content_paned.set_position(300);
+
         //show window first, then apply visible settings, otherwise it won't work
         self.window.show_all();
 
