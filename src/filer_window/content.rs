@@ -22,32 +22,32 @@ use filer_window::window::FilerWindow;
 // #[derive(Clone)]
 pub struct Content {
     pub content_box: gtk::Box,
-    pub left_tree_view: gtk::TreeView,
-    pub left_scrolled_window: gtk::ScrolledWindow,
-    pub middle_scrolled_window: gtk::ScrolledWindow,
+    pub post_tree_view: gtk::TreeView,
+    pub post_scrolled_window: gtk::ScrolledWindow,
+    pub content_scrolled_window: gtk::ScrolledWindow,
     pub preview_scrolled_window: gtk::ScrolledWindow,
     pub places_sidebar: gtk::PlacesSidebar,
     pub search_entry: gtk::SearchEntry,
     pub search_bar: gtk::SearchBar,
     pub postview_content_paned: gtk::Paned,
-    pub paned: gtk::Paned,
+    pub navigation_paned: gtk::Paned,
 }
 
 impl Content {
     pub fn new(builder: &Builder) -> Content {
         Content {
             content_box: builder.get_object::<gtk::Box>("content_box").unwrap(),
-            left_tree_view: builder
-                .get_object::<gtk::TreeView>("left_tree_view")
+            post_tree_view: builder
+                .get_object::<gtk::TreeView>("post_tree_view")
                 .unwrap(),
-            left_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("left_scrolled_window")
+            post_scrolled_window: builder
+                .get_object::<gtk::ScrolledWindow>("post_scrolled_window")
                 .unwrap(),
-            middle_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("middle_scrolled_window")
+            content_scrolled_window: builder
+                .get_object::<gtk::ScrolledWindow>("content_scrolled_window")
                 .unwrap(),
             preview_scrolled_window: builder
-                .get_object::<gtk::ScrolledWindow>("right_scrolled_window")
+                .get_object::<gtk::ScrolledWindow>("preview_scrolled_window")
                 .unwrap(),
             places_sidebar: builder
                 .get_object::<gtk::PlacesSidebar>("places_sidebar")
@@ -56,7 +56,8 @@ impl Content {
                 .get_object::<gtk::SearchEntry>("search_entry")
                 .unwrap(),
             search_bar: builder.get_object::<gtk::SearchBar>("search_bar").unwrap(),
-            paned: builder.get_object::<gtk::Paned>("paned").unwrap(),
+            navigation_paned: builder.get_object::<gtk::Paned>("navigation_paned").unwrap(),
+            postview_content_paned: builder.get_object::<gtk::Paned>("postview_content_paned").unwrap(),
         }
     }
 
@@ -72,43 +73,45 @@ impl Content {
         let mut fileliststore = FileListStore::new();
         fileliststore.fill_from_path(&home_dir().unwrap());
         println!("file count: {}", fileliststore.count);
-        self.left_tree_view.set_model(&fileliststore.list_store);
+        self.post_tree_view.set_model(&fileliststore.list_store);
 
         // let icon_view = self.create_icon_view(&fileliststore.list_store);
         // self.middle_scrolled_window.add_with_viewport(&icon_view);
 
         let tree_view = self.create_tree_view(&fileliststore.list_store);
-        self.middle_scrolled_window.add_with_viewport(&tree_view);
+        self.content_scrolled_window.add_with_viewport(&tree_view);
 
-        self.middle_scrolled_window.connect_map_event(move |_middle_scrolled_window, _event| {
-            // self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
-            Inhibit(false)
-        });
+        self.content_scrolled_window
+            .connect_map_event(move |_middle_scrolled_window, _event| {
+                // self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, allocation| {
+                Inhibit(false)
+            });
 
-        self.middle_scrolled_window.connect_size_allocate(move |_middle_scrolled_window, _allocation| {
-            // let item_width = icon_view.get_item_width();
+        self.content_scrolled_window.connect_size_allocate(
+            move |_middle_scrolled_window, _allocation| {
+                // let item_width = icon_view.get_item_width();
 
-            // let width = allocation.width;
-            // if width > 0 {
-            //     icon_view.set_item_width((width/4) -1);
-            // }
+                // let width = allocation.width;
+                // if width > 0 {
+                //     icon_view.set_item_width((width/4) -1);
+                // }
 
-            // println!("{}", width);
+                // println!("{}", width);
 
-            // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
-            // if scrollbar.get_visible() {
-            //     let _item_width = icon_view.set_item_width(width/2);
-            // } else {
-            //     let _item_width = icon_view.set_item_width(width/2 - 1);
-            // }
+                // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
+                // if scrollbar.get_visible() {
+                //     let _item_width = icon_view.set_item_width(width/2);
+                // } else {
+                //     let _item_width = icon_view.set_item_width(width/2 - 1);
+                // }
 
-            // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
-            // let columns = icon_view.get_columns();
-            // if scrollbar.get_visible() {
-            //         icon_view.set_columns(columns - 1);
-            // middle_scrolled_window.set_width();
-        });
-
+                // let scrollbar = _middle_scrolled_window.get_hscrollbar().unwrap();
+                // let columns = icon_view.get_columns();
+                // if scrollbar.get_visible() {
+                //         icon_view.set_columns(columns - 1);
+                // middle_scrolled_window.set_width();
+            },
+        );
     }
 
     // https://developer.gnome.org/gtk3/stable&fileliststore.list_store/GtkImage.html
@@ -137,7 +140,9 @@ impl Content {
 
         let ui_str = include_str!("../../data/gtk/file_icon_view.ui");
         let builder: gtk::Builder = Builder::new_from_string(ui_str);
-        let icon_view = builder.get_object::<gtk::IconView>("file_icon_view").unwrap();
+        let icon_view = builder
+            .get_object::<gtk::IconView>("file_icon_view")
+            .unwrap();
         icon_view.set_model(model);
 
         icon_view.set_text_column(0);
@@ -148,7 +153,9 @@ impl Content {
     pub fn create_tree_view(&self, model: &ListStore) -> gtk::TreeView {
         let ui_str = include_str!("../../data/gtk/file_tree_view.ui");
         let builder: gtk::Builder = Builder::new_from_string(ui_str);
-        let tree_view = builder.get_object::<gtk::TreeView>("file_tree_view").unwrap();
+        let tree_view = builder
+            .get_object::<gtk::TreeView>("file_tree_view")
+            .unwrap();
         tree_view.set_model(model);
         // let tree_view = TreeView::new();
         // tree_view.set_model(model);

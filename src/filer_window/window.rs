@@ -88,7 +88,7 @@ impl FilerWindow {
 
         // https://wiki.gnome.org/HowDoI/SaveWindowState
         let settings_window_state = self.settings_window_state.clone();
-        let paned = self.contents.paned.clone();
+        let paned = self.contents.navigation_paned.clone();
         self.window.connect_size_allocate(move |window, _event| {
             // save the window geometry only if we are not maximized or fullscreen
             if let Some(gdk_window) = window.get_window() {
@@ -183,7 +183,7 @@ impl FilerWindow {
             self.window.maximize();
         }
 
-        self.contents.paned.set_position(sidebar_width);
+        self.contents.navigation_paned.set_position(sidebar_width);
 
         //show window first, then apply visible settings, otherwise it won't work
         self.window.show_all();
@@ -203,4 +203,3 @@ impl FilerWindow {
         // println!("");
     }
 }
-
