@@ -8,18 +8,16 @@ version = "0.1.0"
 experiments = []
 
 [dependencies]
-gdk = "0.7.0"
-gio = "0.3.0"
-gdk-pixbuf = "0.3.0"
+gdk = "0.8.0"
+gio = "0.4.0"
+gdk-pixbuf = "0.4.0"
 gettext-rs = "0.3.0"
+glib = "0.5.0"
 
 [dependencies.gtk]
 features = [
     "v3_22",
     "embed-lgpl-docs",
 ]
-version = "0.3.x"
-
-[dependencies.glib]
 version = "0.4.0"
 
