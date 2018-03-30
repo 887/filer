@@ -72,6 +72,10 @@ fn main() {
 
     glib::set_program_name(Some("filer"));
 
+    //TODO: research:
+    //connecting to propertie changes in vala works like this app.notify["property"].connect();
+    //whats the equivalent in rust?
+
     app.connect_startup(move |app| {
         let builder: gtk::Builder = get_builder();
 
