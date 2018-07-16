@@ -4,6 +4,7 @@ build = "build.rs"
 name = "filer"
 version = "0.1.0"
 [dependencies]
+dirs = "1.0.2"
 gdk = "0.8.0"
 gdk-pixbuf = "0.4.0"
 gettext-rs = "0.3.0"

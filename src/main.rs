@@ -9,6 +9,7 @@ extern crate gettextrs;
 extern crate gio;
 extern crate glib;
 extern crate gtk;
+extern crate dirs;
 
 #[macro_use]
 mod macros;

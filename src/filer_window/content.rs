@@ -2,10 +2,10 @@ extern crate gdk;
 extern crate gio;
 extern crate glib;
 extern crate gtk;
+extern crate dirs;
 
 use std::fs;
 use std::path::PathBuf;
-use std::env::home_dir;
 
 use gtk::*;
 use gtk::prelude::*;
@@ -71,7 +71,8 @@ impl Content {
 
     pub fn activate(&self, _window: &FilerWindow) {
         let mut fileliststore = FileListStore::new();
-        fileliststore.fill_from_path(&home_dir().unwrap());
+
+        fileliststore.fill_from_path(&dirs::home_dir().unwrap());
         println!("file count: {}", fileliststore.count);
         self.post_tree_view.set_model(&fileliststore.list_store);
 
