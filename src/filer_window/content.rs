@@ -16,8 +16,8 @@ use glib::variant::FromVariant;
 use gtk::*;
 use gtk::prelude::*;
 
-use filer_window::fileliststore::*;
-use filer_window::window::FilerWindow;
+use crate::filer_window::fileliststore::*;
+use crate::filer_window::window::FilerWindow;
 
 // #[derive(Clone)]
 pub struct Content {

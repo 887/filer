@@ -6,7 +6,7 @@ use std::rc::Rc;
 use gtk::*;
 use gtk::prelude::*;
 
-use filer_window::window::FilerWindow;
+use crate::filer_window::window::FilerWindow;
 
 #[derive(Clone)]
 pub struct Header {

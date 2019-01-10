@@ -21,16 +21,16 @@ use glib::variant::FromVariant;
 use gio::prelude::*;
 use gio::{MenuExt, MenuItemExt, SettingsExt};
 
-use consts::{FILER_SETTINGS_PREFERENCES, FILER_SETTINGS_WINDOW_STATE, FILER_WINDOW_INITIAL_HEIGHT,
+use crate::consts::{FILER_SETTINGS_PREFERENCES, FILER_SETTINGS_WINDOW_STATE, FILER_WINDOW_INITIAL_HEIGHT,
              FILER_WINDOW_INITIAL_WIDTH, FILER_WINDOW_MAXIMIZED, FILER_WINDOW_SIDEBAR_WIDTH,
              FILER_WINDOW_START_WITH_SIDEBAR};
 
-use message_boxes::{show_info_message_box,show_yes_no_message_box};
+use crate::message_boxes::{show_info_message_box,show_yes_no_message_box};
 
-use filer_window::header::*;
-use filer_window::content::*;
+use crate::filer_window::header::*;
+use crate::filer_window::content::*;
 
-use widgets::icon_list_view::{IconListView, IconListViewColumn, IconListViewEntry};
+use crate::widgets::icon_list_view::{IconListView, IconListViewColumn, IconListViewEntry};
 
 use glib::translate::*;
 

@@ -29,9 +29,9 @@ use gio::prelude::*;
 use gio::ApplicationFlags;
 use gio::Resource;
 
-use consts::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
-use message_boxes::{show_info_message_box,show_yes_no_message_box};
-use filer_window::window::FilerWindow;
+use crate::consts::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR};
+use crate::message_boxes::{show_info_message_box,show_yes_no_message_box};
+use crate::filer_window::window::FilerWindow;
 
 fn main() {
     bindtextdomain(APP_ID, LOCALEDIR);

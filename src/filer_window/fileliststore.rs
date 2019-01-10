@@ -6,7 +6,7 @@ extern crate gtk;
 
 use gtk::*;
 use gtk::prelude::*;
-use gtk::ListStoreExt;
+use gtk::GtkListStoreExt;
 
 use gtk::*;
 use gtk::prelude::*;
